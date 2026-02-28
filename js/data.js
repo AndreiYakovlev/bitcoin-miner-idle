@@ -79,5 +79,11 @@ const ACHIEVEMENTS = [
   { id: 'sps1t',   name: '1T sat/sec',       desc: 'За пределами реального',   icon: '🌠', check: s => s.sps >= 1e12 },
   { id: 'hodl',    name: 'HODL!',            desc: 'Играй 10 минут',           icon: '💪', check: s => s.playtime >= 600 },
   { id: 'moon',    name: 'To the Moon! 🌕',  desc: 'Играй 1 час',              icon: '🌕', check: s => s.playtime >= 3600 },
-  { id: 'allup',   name: 'Всё прокачано',    desc: 'Купи все апгрейды',        icon: '⭐', check: s => s.upgCount >= UPGRADES.length },
+  { id: 'allup',    name: 'Всё прокачано',   desc: 'Купи все апгрейды',      icon: '⭐', check: s => s.upgCount >= UPGRADES.length },
+  // ─ Prestige ─
+  { id: 'pres1',    name: 'Первый сброс',    desc: 'Сделай престиж',           icon: '♻️', check: s => s.prestigeRuns >= 1 },
+  { id: 'pres5',    name: '5 сбросов',       desc: 'Настойчивый майнер',     icon: '🔄', check: s => s.prestigeRuns >= 5 },
+  { id: 'pres25',   name: '25 сбросов',      desc: 'Аддикт престижа',         icon: '🌀', check: s => s.prestigeRuns >= 25 },
+  { id: 'prespts',  name: '100 очков',      desc: 'Накопи 100 очков престижа', icon: '📈', check: s => s.prestigePoints >= 100 },
+  { id: 'prespts1k',name: '1000 очков',     desc: 'Накопи 1000 очков престижа',icon: '📊', check: s => s.prestigePoints >= 1000 },
 ];

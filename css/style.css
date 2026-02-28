@@ -329,6 +329,131 @@ html, body {
 .pop-name  { font-size: 1rem; font-weight: 800; margin-top: 1px; }
 .pop-desc  { font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
 
+/* ─── PRESTIGE BLOCK ─────────────────────── */
+#prestige-block {
+  width: 100%; max-width: 360px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+#prestige-run-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.prestige-run-label {
+  font-size: 0.72rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em;
+}
+#prestige-run-val {
+  font-size: 1.15rem; font-weight: 900; color: var(--green);
+}
+#prestige-progress-wrap {
+  display: flex; flex-direction: column; gap: 4px;
+}
+#prestige-bar {
+  width: 100%; height: 6px;
+  background: var(--bg5);
+  border-radius: 99px;
+  overflow: hidden;
+}
+#prestige-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+#prestige-bar-label {
+  font-size: 0.63rem; color: var(--text2); text-align: center;
+}
+#prestige-pts-total {
+  font-size: 0.68rem; color: var(--text2); text-align: center;
+}
+#prestige-btn {
+  width: 100%; padding: 12px;
+  background: var(--bg5);
+  color: var(--text2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  cursor: not-allowed;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+#prestige-btn.ready {
+  background: linear-gradient(135deg, rgba(0,232,122,0.12), rgba(0,232,122,0.05));
+  border-color: rgba(0,232,122,0.45);
+  cursor: pointer;
+  color: var(--text);
+}
+#prestige-btn.ready:active { transform: scale(0.98); }
+#prestige-gain-preview {
+  font-size: 0.75rem; color: var(--green);
+}
+#prestige-btn-label {
+  font-size: 0.9rem; font-weight: 800;
+}
+
+/* ─── PRESTIGE MODAL ─────────────────────── */
+#prestige-modal {
+  position: absolute; inset: 0;
+  background: rgba(4,4,8,0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 400;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+}
+#prestige-modal.show { opacity: 1; pointer-events: auto; }
+
+#prestige-box {
+  width: calc(100% - 48px); max-width: 310px;
+  background: var(--bg3);
+  border: 1px solid rgba(0,232,122,0.3);
+  border-radius: 22px;
+  padding: 26px 22px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(0,232,122,0.12);
+  transform: translateY(12px);
+  transition: transform 0.25s;
+}
+#prestige-modal.show #prestige-box { transform: translateY(0); }
+
+#prestige-modal-icon  { font-size: 2.4rem; margin-bottom: 6px; }
+#prestige-modal-title {
+  font-size: 1.1rem; font-weight: 900; margin-bottom: 4px;
+}
+#prestige-modal-desc {
+  font-size: 0.68rem; color: var(--text2); margin-bottom: 16px; line-height: 1.4;
+}
+
+.prestige-modal-row {
+  display: flex; justify-content: space-between;
+  font-size: 0.78rem; padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.prestige-modal-row:last-of-type { border-bottom: none; }
+.prestige-modal-row span:last-child { font-weight: 700; color: var(--green); }
+
+#prestige-modal-btns {
+  display: flex; gap: 8px; margin-top: 18px;
+}
+#prestige-cancel {
+  flex: 1; padding: 12px;
+  background: var(--bg5); color: var(--text2);
+  border: 1px solid var(--border2); border-radius: 10px;
+  font-size: 0.85rem; font-weight: 700; cursor: pointer;
+}
+#prestige-confirm {
+  flex: 2; padding: 12px;
+  background: var(--green); color: #000;
+  border: none; border-radius: 10px;
+  font-size: 0.9rem; font-weight: 900; cursor: pointer;
+  transition: filter 0.15s;
+}
+#prestige-confirm:active { filter: brightness(0.88); }
+
 /* ─── OFFLINE MODAL ──────────────────────── */
 #offline-modal {
   position: absolute; inset: 0;

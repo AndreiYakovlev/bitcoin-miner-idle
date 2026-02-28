@@ -42,6 +42,23 @@
         <div class="stat-value" id="stat-devices">0</div>
       </div>
     </div>
+
+    <!-- Prestige block -->
+    <div id="prestige-block">
+      <div id="prestige-run-row">
+        <span class="prestige-run-label">Престиж</span>
+        <span id="prestige-run-val">0</span>
+      </div>
+      <div id="prestige-pts-total">0 очков × 2% = +0%</div>
+      <div id="prestige-progress-wrap">
+        <div id="prestige-bar"><div id="prestige-bar-fill"></div></div>
+        <div id="prestige-bar-label">до +1 очка</div>
+      </div>
+      <button id="prestige-btn" disabled>
+        <span id="prestige-gain-preview">нужно больше sat/s</span>
+        <span id="prestige-btn-label">♻️ Престиж</span>
+      </button>
+    </div>
   </div>
 
   <!-- SHOP -->
@@ -93,6 +110,31 @@
     <div class="pop-label">Достижение!</div>
     <div class="pop-name" id="pop-name"></div>
     <div class="pop-desc" id="pop-desc"></div>
+  </div>
+</div>
+
+<!-- PRESTIGE CONFIRM MODAL -->
+<div id="prestige-modal">
+  <div id="prestige-box">
+    <div id="prestige-modal-icon">♻️</div>
+    <div id="prestige-modal-title">Престиж</div>
+    <div id="prestige-modal-desc">Сброс прогресса. Достижения сохраняются.</div>
+    <div class="prestige-modal-row">
+      <span>Очков за этот ранд</span>
+      <span id="pconf-gain"></span>
+    </div>
+    <div class="prestige-modal-row">
+      <span>Итого очков</span>
+      <span id="pconf-total"></span>
+    </div>
+    <div class="prestige-modal-row">
+      <span>Новый бонус</span>
+      <span id="pconf-bonus"></span>
+    </div>
+    <div id="prestige-modal-btns">
+      <button id="prestige-cancel">Отмена</button>
+      <button id="prestige-confirm">♻️ Подтвердить</button>
+    </div>
   </div>
 </div>
 

@@ -4,6 +4,41 @@
    ═══════════════════════════════════════════ */
 'use strict';
 
+// ── Prestige modal ───────────────────────
+
+document.getElementById('prestige-btn').addEventListener('click', () => {
+  const gain     = calcPrestigeGain();
+  if (gain <= 0) return;
+  const newTotal = G.prestigePoints + gain;
+  const newBonus = (newTotal * 2).toFixed(0);
+
+  document.getElementById('pconf-gain').textContent  = '+' + gain + ' очков';
+  document.getElementById('pconf-total').textContent = newTotal + ' очков';
+  document.getElementById('pconf-bonus').textContent = '+' + newBonus + '% к sat/sec';
+
+  document.getElementById('prestige-modal').classList.add('show');
+});
+
+document.getElementById('prestige-cancel').addEventListener('click', () => {
+  document.getElementById('prestige-modal').classList.remove('show');
+});
+
+document.getElementById('prestige-confirm').addEventListener('click', () => {
+  document.getElementById('prestige-modal').classList.remove('show');
+
+  doPrestige();
+  recalcMults();
+  G.sps = calcSps();
+
+  renderHeader();
+  renderStats();
+  renderShop();
+  renderUpgrades();
+  renderAchievements();
+  checkAchievements();
+  save();
+});
+
 // ── Offline modal ─────────────────────────
 
 function showOfflineModal(sec, earned) {

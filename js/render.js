@@ -16,6 +16,41 @@ function renderStats() {
   document.getElementById('stat-clicks').textContent  = fmt(G.clicks);
   document.getElementById('stat-devices').textContent = G.devices;
   document.getElementById('click-power').textContent  = fmt(calcClickPow());
+
+  // Prestige button state
+  const gain    = calcPrestigeGain();
+  const canPres = gain > 0;
+  const btn     = document.getElementById('prestige-btn');
+  if (btn) {
+    btn.disabled        = !canPres;
+    btn.classList.toggle('ready', canPres);
+    document.getElementById('prestige-gain-preview').textContent =
+      canPres ? '+' + gain + ' очков' : 'нужно больше sat/s';
+    document.getElementById('prestige-pts-total').textContent =
+      G.prestigePoints + ' очков × 2% = +' +
+      (G.prestigePoints * 2).toFixed(0) + '% к добыче';
+    document.getElementById('prestige-run-val').textContent = G.prestigeRuns;
+
+    // Progress bar toward next gain tier
+    const curGain   = gain;
+    const nextGain  = curGain + 1;
+    const tLow      = curGain  * curGain  * 100;   // sps threshold for current gain
+    const tHigh     = nextGain * nextGain * 100;   // sps threshold for next gain
+    const span      = tHigh - tLow;
+    const pct       = span > 0 ? Math.min(100, (G.sps - tLow) / span * 100) : 100;
+
+    document.getElementById('prestige-bar-fill').style.width = pct.toFixed(1) + '%';
+
+    let barLabel;
+    if (canPres) {
+      const needed = tHigh - G.sps;
+      barLabel = 'Готово (+' + curGain + ' очков)  |  до +' + nextGain + ': ещё ' + fmtSps(needed);
+    } else {
+      const needed = tHigh - G.sps;
+      barLabel = 'до +1 очка: ещё ' + fmtSps(Math.max(0, needed));
+    }
+    document.getElementById('prestige-bar-label').textContent = barLabel;
+  }
 }
 
 // ── Shop ─────────────────────────────────
