@@ -7,12 +7,14 @@
 // ── Buy a miner ───────────────────────────
 
 function buyMiner(m) {
-  const price = getMinerPrice(m);
+  const qty   = G.buyMode === 0 ? calcMaxBuy(m) : G.buyMode;
+  if (qty <= 0) return;
+  const price = calcBulkPrice(m, qty);
   if (G.sat < price) return;
 
   G.sat -= price;
-  G.miners[m.id] = (G.miners[m.id] || 0) + 1;
-  G.devices++;
+  G.miners[m.id] = (G.miners[m.id] || 0) + qty;
+  G.devices += qty;
 
   renderShop();
   renderHeader();

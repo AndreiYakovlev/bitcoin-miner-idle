@@ -23,6 +23,13 @@ const G = {
   // ─ Prestige ───────────────────────────────
   prestigePoints: 0,   // total accumulated points across all runs
   prestigeRuns:   0,   // number of times prestiged
+  // ─ Buy mode (session only) ────────────────
+  buyMode:        1,   // 1 | 10 | 100 | 0 (= max)
+  // ─ Boosts ────────────────────────────────
+  boostCharges:   3,   // current charges (max 3)
+  boostActive:    false,
+  boostEndsAt:    0,   // ms timestamp when boost expires
+  boostChargeAt:  0,   // ms timestamp for next recharge
 };
 
 // ── Pure calculations ─────────────────────
@@ -33,11 +40,43 @@ function getMinerPrice(m) {
   return Math.ceil(m.basePrice * Math.pow(1.15, owned));
 }
 
-/** Total sat/sec from all miners × global multiplier × prestige bonus. */
+/** Total sat/sec from all miners × global multiplier × prestige bonus × boost. */
 function calcSps() {
   let s = 0;
   for (const m of MINERS) s += m.baseSps * (G.miners[m.id] || 0);
-  return s * G.allMult * calcPrestigeBonus();
+  const boost = G.boostActive && Date.now() < G.boostEndsAt ? 2 : 1;
+  return s * G.allMult * calcPrestigeBonus() * boost;
+}
+
+/** Total price for buying `qty` of miner `m` starting from current owned count. */
+function calcBulkPrice(m, qty) {
+  const owned = G.miners[m.id] || 0;
+  let total = 0;
+  for (let i = 0; i < qty; i++)
+    total += Math.ceil(m.basePrice * Math.pow(1.15, owned + i));
+  return total;
+}
+
+/** Max affordable quantity of miner `m` with current balance. */
+function calcMaxBuy(m) {
+  let qty = 0, total = 0;
+  const owned = G.miners[m.id] || 0;
+  while (qty < 10000) {
+    const next = Math.ceil(m.basePrice * Math.pow(1.15, owned + qty));
+    if (total + next > G.sat) break;
+    total += next;
+    qty++;
+  }
+  return qty;
+}
+
+/** Activate a boost charge (×2 sps for 30 s). */
+function activateBoost() {
+  if (G.boostCharges <= 0 || G.boostActive) return;
+  G.boostCharges--;
+  G.boostActive  = true;
+  G.boostEndsAt  = Date.now() + 30000;
+  if (G.boostChargeAt === 0) G.boostChargeAt = Date.now() + 300000;
 }
 
 /** Bonus multiplier from prestige points: +2% per point. */
@@ -116,6 +155,8 @@ function save() {
       achiev:         G.achiev,
       prestigePoints: G.prestigePoints,
       prestigeRuns:   G.prestigeRuns,
+      boostCharges:   G.boostCharges,
+      boostChargeAt:  G.boostChargeAt,
       lastSeen:       Date.now(),
     }));
   } catch (_) {}
@@ -135,6 +176,16 @@ function load() {
     if (d.achiev          != null) G.achiev          = d.achiev;
     if (d.prestigePoints  != null) G.prestigePoints  = d.prestigePoints;
     if (d.prestigeRuns    != null) G.prestigeRuns    = d.prestigeRuns;
+    if (d.boostCharges    != null) G.boostCharges    = d.boostCharges;
+    if (d.boostChargeAt   != null) {
+      G.boostChargeAt = d.boostChargeAt;
+      // process recharges that happened while offline
+      const now = Date.now();
+      while (G.boostCharges < 3 && G.boostChargeAt > 0 && now >= G.boostChargeAt) {
+        G.boostCharges++;
+        G.boostChargeAt = G.boostCharges < 3 ? G.boostChargeAt + 300000 : 0;
+      }
+    }
     // return offline seconds for main.js to handle
     return d.lastSeen ? Math.min((Date.now() - d.lastSeen) / 1000, 7200) : 0;
   } catch (_) { return 0; }

@@ -4,6 +4,24 @@
    ═══════════════════════════════════════════ */
 'use strict';
 
+// ── Currency info modal ────────────────────
+
+(function () {
+  const modal = document.getElementById('currency-modal');
+  const note  = document.getElementById('currency-sat-eq');
+
+  function openCurrencyModal() {
+    note.textContent = 'Сейчас у тебя: ' + fmtBalance(G.sat) +
+      ' (ровно ' + fmt(G.sat) + ' sat)';
+    modal.classList.add('show');
+  }
+
+  document.getElementById('balance-display').addEventListener('click', openCurrencyModal);
+  document.getElementById('balance-hint').addEventListener('click', openCurrencyModal);
+  document.getElementById('currency-close').addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('show'); });
+})();
+
 // ── Hard reset ───────────────────────────
 
 /** Вызови из консоли браузера: resetGame() */
@@ -83,6 +101,32 @@ document.getElementById('offline-close').addEventListener('click', () => {
   document.getElementById('offline-modal').classList.remove('show');
 });
 
+// ── Buy mode FAB ────────────────────────
+
+(function initBuyMode() {
+  const MODES  = [1, 10, 100, 0];
+  const LABELS = ['×1', '×10', '×100', 'Макс'];
+  const fab = document.getElementById('buy-mode-fab');
+
+  fab.addEventListener('click', () => {
+    const idx  = MODES.indexOf(G.buyMode);
+    const next = (idx + 1) % MODES.length;
+    G.buyMode  = MODES[next];
+    fab.textContent = LABELS[next];
+    fab.dataset.mode = G.buyMode;
+    renderShop();
+  });
+})();
+
+// ── Boost ─────────────────────────────────
+
+document.getElementById('boost-btn').addEventListener('click', () => {
+  if (G.boostCharges <= 0 || G.boostActive) return;
+  activateBoost();
+  renderBoost();
+  showPopup('⚡', 'Буст активирован!', '×2 к sat/sec на 30 секунд');
+});
+
 // ── Tab navigation ────────────────────────
 
 (function initTabs() {
@@ -121,6 +165,14 @@ setInterval(() => {
 
   renderHeader();
   renderStats();
+  renderBoost();
+
+  // Boost tick
+  if (G.boostActive && Date.now() >= G.boostEndsAt) G.boostActive = false;
+  if (G.boostCharges < 3 && G.boostChargeAt > 0 && Date.now() >= G.boostChargeAt) {
+    G.boostCharges++;
+    G.boostChargeAt = G.boostCharges < 3 ? G.boostChargeAt + 300000 : 0;
+  }
 
   // Re-render shop/upgrades only every 5 ticks (1 s) to save CPU
   _ticksSinceShopRender++;
@@ -163,6 +215,7 @@ setInterval(save, 15000);
   renderShop();
   renderUpgrades();
   renderAchievements();
+  renderBoost();
   checkAchievements();
   save();
 })();

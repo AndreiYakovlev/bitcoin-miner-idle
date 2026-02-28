@@ -57,14 +57,19 @@ function renderStats() {
 
 function renderShop() {
   const list = document.getElementById('shop-list');
-  list.innerHTML = '<div class="section-title">🛒 Майнинговые устройства</div>';
+  if (!list) return;
+  list.innerHTML = '';
+
+  const mode = G.buyMode;
 
   for (const m of MINERS) {
-    const owned   = G.miners[m.id] || 0;
-    const price   = getMinerPrice(m);
-    const afford  = G.sat >= price;
-    const spsEach = m.baseSps * G.allMult;
-    const spsText = spsEach >= 1
+    const owned    = G.miners[m.id] || 0;
+    const qty      = mode === 0 ? calcMaxBuy(m) : mode;
+    const price    = qty > 0 ? calcBulkPrice(m, qty) : getMinerPrice(m);
+    const afford   = qty > 0 && G.sat >= price;
+    const qtyLabel = mode === 0 ? 'Макс×' + qty : '×' + mode;
+    const spsEach  = m.baseSps * G.allMult;
+    const spsText  = spsEach >= 1
       ? fmt(spsEach) + ' sat/sec каждый'
       : spsEach.toFixed(2) + ' sat/sec каждый';
 
@@ -79,10 +84,38 @@ function renderShop() {
       `</div>` +
       `<div class="item-right">` +
         `<div class="item-price">${fmt(price)} sat</div>` +
+        `<div class="item-buy-qty">${qtyLabel}</div>` +
         `<div class="item-count">${owned}</div>` +
       `</div>`;
     card.addEventListener('click', () => buyMiner(m));
     list.appendChild(card);
+  }
+}
+
+// ── Boost ─────────────────────────────────
+
+function renderBoost() {
+  const btn  = document.getElementById('boost-btn');
+  const info = document.getElementById('boost-info');
+  if (!btn) return;
+  const now = Date.now();
+  if (G.boostActive && now < G.boostEndsAt) {
+    const rem = Math.ceil((G.boostEndsAt - now) / 1000);
+    btn.disabled = true;
+    btn.classList.add('running');
+    btn.querySelector('.boost-label').textContent = '⚡ Активен: ' + rem + 'с';
+  } else {
+    if (G.boostActive) G.boostActive = false;
+    btn.disabled = G.boostCharges <= 0;
+    btn.classList.remove('running');
+    btn.querySelector('.boost-label').textContent = '⚡ Буст ×2 на 30с';
+  }
+  btn.querySelector('.boost-charges').textContent = G.boostCharges + '/3';
+  if (G.boostCharges < 3 && G.boostChargeAt > 0) {
+    const rem = Math.max(0, Math.ceil((G.boostChargeAt - now) / 1000));
+    info.textContent = rem > 0 ? 'след. заряд через ' + fmtTime(rem) : '';
+  } else {
+    info.textContent = G.boostCharges >= 3 ? 'Все заряды готовы' : '';
   }
 }
 

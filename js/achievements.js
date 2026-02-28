@@ -25,7 +25,11 @@ function checkAchievements() {
 }
 
 // ── Show popup queue ──────────────────────
-
+/** Generic popup — reuses the achievement popup. */
+function showPopup(icon, name, desc) {
+  _achQueue.push({ icon, name, desc });
+  if (!_achShowing) _showNextAch();
+}
 function _showNextAch() {
   if (_achQueue.length === 0) { _achShowing = false; return; }
   _achShowing = true;
