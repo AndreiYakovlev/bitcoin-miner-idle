@@ -27,9 +27,9 @@ function fmt(n) {
 function fmtBalance(n) {
   if (n < 1e4)  return fmt(n) + ' sat';
   if (n < 1e6)  return (n / 1e3).toFixed(1) + 'K sat';
-  if (n < 1e8)  return (n / 1e6).toFixed(4) + ' mBTC';
-  if (n < 1e16) return (n / 1e8).toFixed(8) + ' BTC';
-  return (n / 1e8).toExponential(3) + ' BTC';
+  if (n < 1e8)  return (n / 1e6).toFixed(2) + ' mBTC';
+  if (n < 1e16) return (n / 1e8).toFixed(4) + ' BTC';
+  return (n / 1e8).toExponential(2) + ' BTC';
 }
 
 /** Format sat-per-second value. */
