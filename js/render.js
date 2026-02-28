@@ -140,12 +140,14 @@ function renderAchievements() {
 // ── Float text (click sparks) ─────────────
 
 function spawnFloat(cx, cy, text) {
-  const el  = document.createElement('div');
+  const app  = document.getElementById('app');
+  const rect = app.getBoundingClientRect();
+  const el   = document.createElement('div');
   el.className   = 'float-text';
   el.textContent = text;
   const ox  = (Math.random() * 50) - 25;
-  el.style.left  = (cx + ox - 15) + 'px';
-  el.style.top   = (cy - 10)      + 'px';
-  document.body.appendChild(el);
+  el.style.left  = (cx - rect.left + ox - 15) + 'px';
+  el.style.top   = (cy - rect.top  - 10)      + 'px';
+  app.appendChild(el);
   setTimeout(() => el.remove(), 870);
 }

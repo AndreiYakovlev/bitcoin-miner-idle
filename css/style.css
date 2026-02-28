@@ -37,9 +37,41 @@ html, body {
   -webkit-user-select: none;
 }
 
+/* ─── APP WRAPPER ────────────────────────── */
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(247,147,26,0.09) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 50%, rgba(79,195,255,0.06) 0%, transparent 50%),
+      #040408;
+  }
+
+  #app {
+    position: relative;
+    width: 420px;
+    height: min(860px, 96dvh);
+    border-radius: 6px;
+    box-shadow:
+      0 0 0 1px rgba(247,147,26,0.25),
+      0 0 40px  rgba(247,147,26,0.18),
+      0 0 90px  rgba(247,147,26,0.10),
+      0 0 160px rgba(247,147,26,0.06);
+  }
+}
+
 /* ─── HEADER ─────────────────────────────── */
 #header {
-  position: fixed; top: 0; left: 0; right: 0;
+  position: absolute; top: 0; left: 0; right: 0;
   height: 64px;
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
@@ -61,7 +93,7 @@ html, body {
 
 /* ─── CONTENT ─────────────────────────────── */
 #content {
-  position: fixed;
+  position: absolute;
   top: 64px; bottom: 60px;
   left: 0; right: 0;
   overflow-y: auto;
@@ -137,7 +169,7 @@ html, body {
 
 /* ─── FLOAT TEXT ──────────────────────────── */
 .float-text {
-  position: fixed;
+  position: absolute;
   font-size: 1rem; font-weight: 800;
   color: var(--green);
   pointer-events: none;
@@ -248,7 +280,7 @@ html, body {
 
 /* ─── BOTTOM NAV ──────────────────────────── */
 #bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
+  position: absolute; bottom: 0; left: 0; right: 0;
   height: 60px;
   background: var(--bg2);
   border-top: 1px solid var(--border);
@@ -278,7 +310,7 @@ html, body {
 
 /* ─── ACHIEVEMENT POPUP ───────────────────── */
 #ach-popup {
-  position: fixed; top: 72px;
+  position: absolute; top: 72px;
   left: 50%; transform: translateX(-50%) translateY(-14px);
   width: calc(100% - 32px); max-width: 340px;
   background: linear-gradient(135deg, var(--bg3), var(--bg4));
