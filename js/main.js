@@ -4,6 +4,32 @@
    ═══════════════════════════════════════════ */
 'use strict';
 
+// ── Hard reset ───────────────────────────
+
+/** Вызови из консоли браузера: resetGame() */
+window.resetGame = function () {
+  document.getElementById('reset-modal').classList.add('show');
+};
+
+/** Добавить сатоши: addSat(1e9) */
+window.addSat = function (amount) {
+  amount = Number(amount) || 0;
+  G.sat   += amount;
+  G.total += amount;
+  renderHeader();
+  renderStats();
+};
+
+document.getElementById('reset-cancel').addEventListener('click', () => {
+  document.getElementById('reset-modal').classList.remove('show');
+});
+
+document.getElementById('reset-confirm').addEventListener('click', () => {
+  window.removeEventListener('beforeunload', save); // prevent save() on unload
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+});
+
 // ── Prestige modal ───────────────────────
 
 document.getElementById('prestige-btn').addEventListener('click', () => {
