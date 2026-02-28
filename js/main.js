@@ -4,6 +4,24 @@
    ═══════════════════════════════════════════ */
 'use strict';
 
+// ── Offline modal ─────────────────────────
+
+function showOfflineModal(sec, earned) {
+  const MAX = 7200;
+  const pct = Math.min(sec / MAX * 100, 100).toFixed(1);
+
+  document.getElementById('offline-earned').textContent  = '+' + fmtBalance(earned);
+  document.getElementById('offline-bar-fill').style.width = pct + '%';
+  document.getElementById('offline-time-val').textContent = fmtTime(sec) +
+    ' из ' + fmtTime(MAX);
+
+  document.getElementById('offline-modal').classList.add('show');
+}
+
+document.getElementById('offline-close').addEventListener('click', () => {
+  document.getElementById('offline-modal').classList.remove('show');
+});
+
 // ── Tab navigation ────────────────────────
 
 (function initTabs() {
@@ -67,9 +85,17 @@ setInterval(save, 15000);
 // ── Initialise ────────────────────────────
 
 (function init() {
-  load();
+  const offlineSec = load();
   recalcMults();
   G.sps = calcSps();
+
+  // ── Offline earnings ────────────────────
+  if (offlineSec >= 30 && G.sps > 0) {
+    const earned = G.sps * offlineSec;
+    G.sat   += earned;
+    G.total += earned;
+    showOfflineModal(offlineSec, earned);
+  }
 
   renderHeader();
   renderStats();
@@ -77,4 +103,5 @@ setInterval(save, 15000);
   renderUpgrades();
   renderAchievements();
   checkAchievements();
+  save();
 })();

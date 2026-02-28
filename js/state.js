@@ -69,6 +69,7 @@ function save() {
       miners:   G.miners,
       upgrades: G.upgrades,
       achiev:   G.achiev,
+      lastSeen: Date.now(),
     }));
   } catch (_) {}
 }
@@ -85,5 +86,10 @@ function load() {
     if (d.miners   != null) G.miners   = d.miners;
     if (d.upgrades != null) G.upgrades = d.upgrades;
     if (d.achiev   != null) G.achiev   = d.achiev;
-  } catch (_) {}
+    // return offline seconds for main.js to handle
+    return d.lastSeen ? Math.min((Date.now() - d.lastSeen) / 1000, 7200) : 0;
+  } catch (_) { return 0; }
 }
+
+// Save on tab close / navigation
+window.addEventListener('beforeunload', save);
