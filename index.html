@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bitcoin Miner Idle</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="header-logo">₿</div>
+  <div id="header-info">
+    <div id="balance-display">0 sat</div>
+    <div id="sps-display">+0 sat/sec</div>
+  </div>
+  <div id="header-time">00:00:00</div>
+</div>
+
+<!-- CONTENT -->
+<div id="content">
+
+  <!-- MINE -->
+  <div id="mine-panel" class="tab-panel active">
+    <div id="coin-wrap">
+      <div id="coin">₿</div>
+    </div>
+    <div class="click-info">+<strong id="click-power">1</strong> sat за клик</div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">сего добыто</div>
+        <div class="stat-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">ликов</div>
+        <div class="stat-value" id="stat-clicks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">стройств</div>
+        <div class="stat-value" id="stat-devices">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOP -->
+  <div id="shop-panel" class="tab-panel">
+    <div class="list-panel" id="shop-list"></div>
+  </div>
+
+  <!-- UPGRADES -->
+  <div id="upgrades-panel" class="tab-panel">
+    <div class="list-panel" id="upgrades-list"></div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div id="ach-panel" class="tab-panel">
+    <div class="ach-progress-wrap">
+      <div class="section-title" style="padding-top:12px;">остижения</div>
+      <div class="ach-progress-bar-bg">
+        <div class="ach-progress-bar-fill" id="ach-bar" style="width:0%"></div>
+      </div>
+      <div class="ach-progress-label" id="ach-bar-label">0 / 0</div>
+    </div>
+    <div class="ach-grid" id="ach-grid"></div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div id="bottom-nav">
+  <button class="nav-btn active" data-tab="mine">
+    <span class="nav-icon">⛏️</span><span>айнить</span>
+  </button>
+  <button class="nav-btn" data-tab="shop">
+    <span class="nav-icon">🛒</span><span>агазин</span>
+  </button>
+  <button class="nav-btn" data-tab="upgrades">
+    <span class="nav-icon">⚡</span><span>пгрейды</span>
+    <span class="nav-badge" id="upg-badge" style="display:none"></span>
+  </button>
+  <button class="nav-btn" data-tab="ach">
+    <span class="nav-icon">🏆</span><span>чивки</span>
+    <span class="nav-badge" id="ach-badge" style="display:none"></span>
+  </button>
+</div>
+
+<!-- ACHIEVEMENT POPUP -->
+<div id="ach-popup">
+  <div class="pop-icon" id="pop-icon"></div>
+  <div>
+    <div class="pop-label">остижение!</div>
+    <div class="pop-name" id="pop-name"></div>
+    <div class="pop-desc" id="pop-desc"></div>
+  </div>
+</div>
+
+<!-- Scripts — load order matters (global scope, no ES modules) -->
+<script src="js/data.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/state.js"></script>
+<script src="js/render.js"></script>
+<script src="js/actions.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
