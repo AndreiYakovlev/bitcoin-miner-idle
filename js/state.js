@@ -76,6 +76,7 @@ function doPrestige() {
   const savedAchiev         = G.achiev;
   const savedPrestigePoints = G.prestigePoints + gain;
   const savedPrestigeRuns   = G.prestigeRuns   + 1;
+  const savedPlaytime       = G.playtime;
 
   // reset all run data
   G.sat       = 0;
@@ -94,6 +95,7 @@ function doPrestige() {
   G.achiev         = savedAchiev;
   G.prestigePoints = savedPrestigePoints;
   G.prestigeRuns   = savedPrestigeRuns;
+  G.playtime       = savedPlaytime;
 
   return true;
 }
