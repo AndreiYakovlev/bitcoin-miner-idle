@@ -143,6 +143,7 @@ document.getElementById('boost-btn').addEventListener('click', () => {
       if (tab === 'shop')     renderShop();
       if (tab === 'upgrades') renderUpgrades();
       if (tab === 'ach')      renderAchievements();
+      if (tab === 'stats')    renderStatPanel();
     });
   });
 })();
@@ -158,6 +159,7 @@ setInterval(() => {
   _lastTick  = now;
 
   G.sps      = calcSps();
+  if (G.sps > G.spsRecord) G.spsRecord = G.sps;
   const earn = G.sps * dt;
   G.sat      += earn;
   G.total    += earn;
@@ -180,6 +182,7 @@ setInterval(() => {
     _ticksSinceShopRender = 0;
     if (document.getElementById('shop-panel').classList.contains('active'))     renderShop();
     if (document.getElementById('upgrades-panel').classList.contains('active')) renderUpgrades();
+    if (document.getElementById('stats-panel').classList.contains('active'))    renderStatPanel();
   }
 
   checkAchievements();

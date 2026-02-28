@@ -267,6 +267,23 @@ html, body {
 .ach-name { font-size: 0.62rem; font-weight: 700; margin-top: 5px; color: var(--text); }
 .ach-desc { font-size: 0.55rem; color: var(--text2); margin-top: 2px; line-height: 1.3; }
 
+/* Stats panel */
+.stat-section {
+  padding: 0 14px 10px;
+}
+.stat-section .section-title {
+  padding-top: 14px; padding-left: 0;
+}
+.stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 2px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-key { color: var(--text2); }
+.stat-val { font-weight: 700; color: var(--text); text-align: right; max-width: 55%; }
+
 /* Achievement progress bar */
 .ach-progress-wrap  { padding: 0 10px 6px; }
 .ach-progress-bar-bg {

@@ -205,7 +205,66 @@ function renderAchievements() {
   badge.style.display = unlocked > 0 ? 'block' : 'none';
 }
 
-// ── Float text (click sparks) ─────────────
+// ── Statistics ─────────────────────────────────
+
+function renderStatPanel() {
+  const list = document.getElementById('stats-list');
+  if (!list) return;
+
+  const achCount = Object.keys(G.achiev).length;
+  const topMiner = MINERS.reduce((best, m) => {
+    const contrib = m.baseSps * (G.miners[m.id] || 0);
+    return contrib > best.val ? { val: contrib, name: m.name, emoji: m.emoji } : best;
+  }, { val: 0, name: '—', emoji: '' });
+
+  const sections = [
+    {
+      title: '💰 Прогресс',
+      rows: [
+        ['Всего добыто (все ранды)',  fmtBalance(G.totalEver + G.total)],
+        ['Текущий sat/sec',          fmtSps(G.sps)],
+        ['Рекордный sat/sec',         fmtSps(G.spsRecord)],
+        ['Всего кликов',            fmt(G.clicks)],
+      ]
+    },
+    {
+      title: '♻️ Престиж',
+      rows: [
+        ['Количество сбросов',       G.prestigeRuns],
+        ['Накоплено очков',         G.prestigePoints],
+        ['Бонус к sat/sec',          '+' + (G.prestigePoints * 2).toFixed(0) + '%'],
+        ['Лучший сброс (очков)',     G.bestPrestigeGain > 0 ? '+' + G.bestPrestigeGain : '—'],
+      ]
+    },
+    {
+      title: '⛏️ Майнинг',
+      rows: [
+        ['Устройств сейчас',        G.devices],
+        ['Устройств за всё время',  G.totalDevicesEver + G.devices],
+        ['Апгрейдов куплено',      G.upgCount],
+        ['Лучший майнер',        topMiner.val > 0 ? topMiner.emoji + ' ' + topMiner.name : '—'],
+      ]
+    },
+    {
+      title: '🏅 Достижения и время',
+      rows: [
+        ['Достижений получено',   achCount + ' / ' + ACHIEVEMENTS.length],
+        ['Время в игре',          fmtTime(G.playtime)],
+      ]
+    },
+  ];
+
+  list.innerHTML = sections.map(sec => `
+    <div class="stat-section">
+      <div class="section-title">${sec.title}</div>
+      ${sec.rows.map(([k, v]) =>
+        `<div class="stat-row"><span class="stat-key">${k}</span><span class="stat-val">${v}</span></div>`
+      ).join('')}
+    </div>
+  `).join('');
+}
+
+// ── Float text (click sparks) ─────────────────
 
 function spawnFloat(cx, cy, text) {
   const app  = document.getElementById('app');

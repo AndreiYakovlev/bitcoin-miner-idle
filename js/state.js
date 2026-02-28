@@ -30,6 +30,11 @@ const G = {
   boostActive:    false,
   boostEndsAt:    0,   // ms timestamp when boost expires
   boostChargeAt:  0,   // ms timestamp for next recharge
+  // ─ Stats (lifetime) ──────────────────────
+  totalEver:       0,  // sat earned across ALL runs
+  totalDevicesEver:0,  // devices bought across ALL runs
+  spsRecord:       0,  // highest sps ever reached
+  bestPrestigeGain:0,  // most points earned in a single prestige
 };
 
 // ── Pure calculations ─────────────────────
@@ -116,6 +121,10 @@ function doPrestige() {
   const savedPrestigePoints = G.prestigePoints + gain;
   const savedPrestigeRuns   = G.prestigeRuns   + 1;
   const savedPlaytime       = G.playtime;
+  const savedTotalEver      = G.totalEver + G.total;
+  const savedDevicesEver    = G.totalDevicesEver + G.devices;
+  const savedBestGain       = Math.max(G.bestPrestigeGain, gain);
+  const savedSpsRecord      = G.spsRecord;
 
   // reset all run data
   G.sat       = 0;
@@ -131,10 +140,14 @@ function doPrestige() {
   G.allMult   = 1;
 
   // restore persisted data
-  G.achiev         = savedAchiev;
-  G.prestigePoints = savedPrestigePoints;
-  G.prestigeRuns   = savedPrestigeRuns;
-  G.playtime       = savedPlaytime;
+  G.achiev          = savedAchiev;
+  G.prestigePoints  = savedPrestigePoints;
+  G.prestigeRuns    = savedPrestigeRuns;
+  G.playtime        = savedPlaytime;
+  G.totalEver       = savedTotalEver;
+  G.totalDevicesEver= savedDevicesEver;
+  G.bestPrestigeGain= savedBestGain;
+  G.spsRecord       = savedSpsRecord;
 
   return true;
 }
@@ -157,6 +170,10 @@ function save() {
       prestigeRuns:   G.prestigeRuns,
       boostCharges:   G.boostCharges,
       boostChargeAt:  G.boostChargeAt,
+      totalEver:        G.totalEver,
+      totalDevicesEver: G.totalDevicesEver,
+      spsRecord:        G.spsRecord,
+      bestPrestigeGain: G.bestPrestigeGain,
       lastSeen:       Date.now(),
     }));
   } catch (_) {}
@@ -186,6 +203,10 @@ function load() {
         G.boostChargeAt = G.boostCharges < 3 ? G.boostChargeAt + 300000 : 0;
       }
     }
+    if (d.totalEver        != null) G.totalEver        = d.totalEver;
+    if (d.totalDevicesEver != null) G.totalDevicesEver = d.totalDevicesEver;
+    if (d.spsRecord        != null) G.spsRecord        = d.spsRecord;
+    if (d.bestPrestigeGain != null) G.bestPrestigeGain = d.bestPrestigeGain;
     // return offline seconds for main.js to handle
     return d.lastSeen ? Math.min((Date.now() - d.lastSeen) / 1000, 7200) : 0;
   } catch (_) { return 0; }
