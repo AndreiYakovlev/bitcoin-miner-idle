@@ -20,6 +20,24 @@
   --radius:  14px;
 }
 
+/* ─ Light theme ────────────────────────────── */
+#app[data-theme="light"] {
+  --bg:      #f4f4ee;
+  --bg2:     #eaeae2;
+  --bg3:     #e0e0d8;
+  --bg4:     #d6d6ce;
+  --bg5:     #cbcbc2;
+  --accent:  #e07000;
+  --accent2: #b85800;
+  --green:   #009950;
+  --blue:    #1880b0;
+  --red:     #cc2222;
+  --text:    #1a1a24;
+  --text2:   #55556a;
+  --border:  #c8c8be;
+  --border2: #b8b8ae;
+}
+
 * {
   box-sizing: border-box;
   margin: 0; padding: 0;
@@ -43,6 +61,7 @@ html, body {
   inset: 0;
   overflow: hidden;
   background: var(--bg);
+  color: var(--text);
 }
 
 @media (min-width: 1024px) {
@@ -89,12 +108,35 @@ html, body {
   line-height: 1.2;
 }
 #sps-display   { font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
-#header-time   { font-size: 0.65rem; color: var(--text2); text-align: right; white-space: nowrap; }
+#header-right  { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+#header-time   { font-size: 0.65rem; color: var(--text2); white-space: nowrap; }
+#theme-btn {
+  background: none; border: none; font-size: 0.85rem; cursor: pointer;
+  padding: 0; line-height: 1;
+}
+
+/* ── Ticker ─────────────────────────────── */
+#ticker-wrap {
+  position: absolute; top: 64px; left: 0; right: 0; height: 26px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 10px;
+  overflow: hidden;
+  z-index: 90;
+}
+#ticker-icon { font-size: 0.7rem; flex-shrink: 0; }
+#ticker-text {
+  font-size: 0.65rem; color: var(--text2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transition: opacity 0.35s;
+}
+#ticker-text.ticker-visible { opacity: 1; }
 
 /* ─── CONTENT ─────────────────────────────── */
 #content {
   position: absolute;
-  top: 64px; bottom: 60px;
+  top: 90px; bottom: 60px;
   left: 0; right: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -345,6 +387,11 @@ html, body {
 .pop-label { font-size: 0.62rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 .pop-name  { font-size: 1rem; font-weight: 800; margin-top: 1px; }
 .pop-desc  { font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
+
+.manager-title { color: var(--blue); border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px; }
+.manager-card .item-emoji { filter: none; }
+.manager-card.affordable { border-color: rgba(79,195,255,0.4); }
+.manager-card.affordable .item-price { color: var(--blue); }
 
 /* ─── SHOP HEADER + BUY MODE FAB ──────────── */
 #shop-header {

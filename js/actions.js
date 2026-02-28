@@ -23,6 +23,24 @@ function buyMiner(m) {
   save();
 }
 
+// ── Buy a manager ──────────────────────
+
+function buyManager(m) {
+  const qty   = G.buyMode === 0 ? calcManagerMaxBuy(m) : G.buyMode;
+  if (qty <= 0) return;
+  const price = calcManagerBulkPrice(m, qty);
+  if (G.sat < price) return;
+
+  G.sat -= price;
+  G.managers[m.id] = (G.managers[m.id] || 0) + qty;
+
+  renderShop();
+  renderHeader();
+  renderStats();
+  checkAchievements();
+  save();
+}
+
 // ── Buy an upgrade ────────────────────────
 
 function buyUpgrade(u) {

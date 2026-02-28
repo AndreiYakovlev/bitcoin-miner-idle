@@ -35,6 +35,8 @@ const G = {
   totalDevicesEver:0,  // devices bought across ALL runs
   spsRecord:       0,  // highest sps ever reached
   bestPrestigeGain:0,  // most points earned in a single prestige
+  // ─ Managers ────────────────────────────────
+  managers:       {},  // managerId → count
 };
 
 // ── Pure calculations ─────────────────────
@@ -99,6 +101,35 @@ function calcClickPow() {
   return Math.max(1, Math.floor(G.clickMult));
 }
 
+/** Auto-click sat/sec from managers (applies click power). */
+function calcAutoClick() {
+  let c = 0;
+  for (const m of MANAGERS) c += m.clicksPerSec * (G.managers[m.id] || 0);
+  return c * calcClickPow();
+}
+
+/** Price for buying `qty` managers starting from current owned. */
+function calcManagerBulkPrice(m, qty) {
+  const owned = G.managers[m.id] || 0;
+  let total = 0;
+  for (let i = 0; i < qty; i++)
+    total += Math.ceil(m.basePrice * Math.pow(1.15, owned + i));
+  return total;
+}
+
+/** Max affordable quantity of manager `m`. */
+function calcManagerMaxBuy(m) {
+  let qty = 0, total = 0;
+  const owned = G.managers[m.id] || 0;
+  while (qty < 10000) {
+    const next = Math.ceil(m.basePrice * Math.pow(1.15, owned + qty));
+    if (total + next > G.sat) break;
+    total += next;
+    qty++;
+  }
+  return qty;
+}
+
 /** Recalculate clickMult and allMult from purchased upgrades. */
 function recalcMults() {
   let cm = 1, am = 1;
@@ -136,6 +167,7 @@ function doPrestige() {
   G.upgCount  = 0;
   G.miners    = {};
   G.upgrades  = {};
+  G.managers  = {};
   G.clickMult = 1;
   G.allMult   = 1;
 
@@ -174,6 +206,7 @@ function save() {
       totalDevicesEver: G.totalDevicesEver,
       spsRecord:        G.spsRecord,
       bestPrestigeGain: G.bestPrestigeGain,
+      managers:         G.managers,
       lastSeen:       Date.now(),
     }));
   } catch (_) {}
@@ -207,6 +240,7 @@ function load() {
     if (d.totalDevicesEver != null) G.totalDevicesEver = d.totalDevicesEver;
     if (d.spsRecord        != null) G.spsRecord        = d.spsRecord;
     if (d.bestPrestigeGain != null) G.bestPrestigeGain = d.bestPrestigeGain;
+    if (d.managers         != null) G.managers         = d.managers;
     // return offline seconds for main.js to handle
     return d.lastSeen ? Math.min((Date.now() - d.lastSeen) / 1000, 7200) : 0;
   } catch (_) { return 0; }

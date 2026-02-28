@@ -90,6 +90,38 @@ function renderShop() {
     card.addEventListener('click', () => buyMiner(m));
     list.appendChild(card);
   }
+
+  // ── Managers section ───────────────────
+  const mgrdiv = document.createElement('div');
+  mgrdiv.className = 'section-title manager-title';
+  mgrdiv.textContent = '👤 Менеджеры (автоклик)';
+  list.appendChild(mgrdiv);
+
+  for (const m of MANAGERS) {
+    const owned    = G.managers[m.id] || 0;
+    const qty      = mode === 0 ? calcManagerMaxBuy(m) : mode;
+    const price    = qty > 0 ? calcManagerBulkPrice(m, qty) : Math.ceil(m.basePrice);
+    const afford   = qty > 0 && G.sat >= price;
+    const qtyLabel = mode === 0 ? 'Макс×' + qty : '×' + mode;
+    const cps      = (m.clicksPerSec * calcClickPow()).toFixed(1);
+
+    const card = document.createElement('div');
+    card.className = 'item-card manager-card' + (afford ? ' affordable' : '');
+    card.innerHTML =
+      `<div class="item-emoji">${m.emoji}</div>` +
+      `<div class="item-info">` +
+        `<div class="item-name">${m.name}</div>` +
+        `<div class="item-desc">${m.desc}</div>` +
+        `<div class="item-sps">+${cps} sat/click·s</div>` +
+      `</div>` +
+      `<div class="item-right">` +
+        `<div class="item-price">${fmt(price)} sat</div>` +
+        `<div class="item-buy-qty">${qtyLabel}</div>` +
+        `<div class="item-count">${owned}</div>` +
+      `</div>`;
+    card.addEventListener('click', () => buyManager(m));
+    list.appendChild(card);
+  }
 }
 
 // ── Boost ─────────────────────────────────
@@ -225,6 +257,7 @@ function renderStatPanel() {
         ['Текущий sat/sec',          fmtSps(G.sps)],
         ['Рекордный sat/sec',         fmtSps(G.spsRecord)],
         ['Всего кликов',            fmt(G.clicks)],
+        ['Авто-клик sat/sec',       fmt(Math.round(calcAutoClick()))],
       ]
     },
     {

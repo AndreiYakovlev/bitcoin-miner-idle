@@ -4,6 +4,38 @@
    ═══════════════════════════════════════════ */
 'use strict';
 
+// ── Ticker ───────────────────────────────────
+
+(function initTicker() {
+  const el = document.getElementById('ticker-text');
+  let idx = Math.floor(Math.random() * NEWS_TICKER.length);
+  function showNext() {
+    el.classList.remove('ticker-visible');
+    setTimeout(() => {
+      el.textContent = NEWS_TICKER[idx % NEWS_TICKER.length];
+      idx++;
+      el.classList.add('ticker-visible');
+    }, 350);
+  }
+  showNext();
+  setInterval(showNext, 9000);
+})();
+
+// ── Theme toggle ───────────────────────────
+
+(function initTheme() {
+  const app = document.getElementById('app');
+  const btn = document.getElementById('theme-btn');
+  const saved = localStorage.getItem('btc_theme') || 'dark';
+  if (saved === 'light') { app.dataset.theme = 'light'; btn.textContent = '🌙'; }
+  btn.addEventListener('click', () => {
+    const isLight = app.dataset.theme === 'light';
+    app.dataset.theme = isLight ? 'dark' : 'light';
+    btn.textContent   = isLight ? '☀️' : '🌙';
+    localStorage.setItem('btc_theme', app.dataset.theme);
+  });
+})();
+
 // ── Currency info modal ────────────────────
 
 (function () {
@@ -161,8 +193,9 @@ setInterval(() => {
   G.sps      = calcSps();
   if (G.sps > G.spsRecord) G.spsRecord = G.sps;
   const earn = G.sps * dt;
-  G.sat      += earn;
-  G.total    += earn;
+  const autoEarn = calcAutoClick() * dt;
+  G.sat      += earn + autoEarn;
+  G.total    += earn + autoEarn;
   G.playtime += dt;
 
   renderHeader();
