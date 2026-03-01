@@ -9,7 +9,7 @@
 (function initTicker() {
   const wrap = document.getElementById('ticker-wrap');
   const icon = document.getElementById('ticker-icon');
-  const el   = document.getElementById('ticker-text');
+  const el = document.getElementById('ticker-text');
   let idx = Math.floor(Math.random() * NEWS_TICKER.length);
   let nextTimer;
 
@@ -27,17 +27,17 @@
       // measure after paint
       requestAnimationFrame(() => {
         const available = wrap.clientWidth - (icon ? icon.offsetWidth + 18 : 22);
-        const textW     = el.offsetWidth;
-        const overflow  = textW - available;
+        const textW = el.offsetWidth;
+        const overflow = textW - available;
 
         clearTimeout(nextTimer);
         if (overflow > 8) {
           const scrollPx = overflow + 32;          // scroll past the cut-off + small buffer
-          const dur      = scrollPx / 75;          // 75 px/s — comfortable reading speed
-          const delay    = 1.0;                    // pause before moving
+          const dur = scrollPx / 75;          // 75 px/s — comfortable reading speed
+          const delay = 1.0;                    // pause before moving
           el.style.setProperty('--ticker-offset', `-${scrollPx}px`);
-          el.style.setProperty('--ticker-dur',    `${dur.toFixed(1)}s`);
-          el.style.setProperty('--ticker-delay',  `${delay}s`);
+          el.style.setProperty('--ticker-dur', `${dur.toFixed(1)}s`);
+          el.style.setProperty('--ticker-delay', `${delay}s`);
           el.classList.add('ticker-scroll');
           nextTimer = setTimeout(showNext, (delay + dur + 1.5) * 1000);
         } else {
@@ -59,13 +59,13 @@
   let prevPrice = null;
 
   function fmtUsd(n) {
-    return '₿ $' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return '📈 $' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   async function fetchPrice() {
     try {
-      const res  = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',
-                               { cache: 'no-store' });
+      const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',
+        { cache: 'no-store' });
       const data = await res.json();
       const price = parseFloat(data.price);
 
@@ -96,7 +96,7 @@
   btn.addEventListener('click', () => {
     const isLight = app.dataset.theme === 'light';
     app.dataset.theme = isLight ? 'dark' : 'light';
-    btn.textContent   = isLight ? '☀️' : '🌙';
+    btn.textContent = isLight ? '☀️' : '🌙';
     localStorage.setItem('btc_theme', app.dataset.theme);
   });
 })();
@@ -105,7 +105,7 @@
 
 (function () {
   const modal = document.getElementById('currency-modal');
-  const note  = document.getElementById('currency-sat-eq');
+  const note = document.getElementById('currency-sat-eq');
 
   function openCurrencyModal() {
     note.textContent = 'Сейчас у тебя: ' + fmtBalance(G.sat) +
@@ -129,8 +129,15 @@ window.resetGame = function () {
 /** Добавить сатоши: addSat(1e9) */
 window.addSat = function (amount) {
   amount = Math.floor(Number(amount) || 0);
-  G.sat   += amount;
+  G.sat += amount;
   G.total += amount;
+  renderHeader();
+  renderStats();
+};
+
+window.addGems = function (amount) {
+  amount = Math.floor(Number(amount) || 0);
+  G.gems = (G.gems || 0) + amount;
   renderHeader();
   renderStats();
 };
@@ -148,13 +155,19 @@ document.getElementById('reset-confirm').addEventListener('click', () => {
 // ── Prestige modal ───────────────────────
 
 document.getElementById('prestige-open-btn').addEventListener('click', () => {
-  const gain     = calcPrestigeGain();
-  const newTotal = G.prestigePoints + gain;
+  const gain = calcPrestigeGain();
+  const curPoints = G.prestigePoints;
+  const newTotal = curPoints + gain;
+  const curBonus = (curPoints * 2).toFixed(0);
   const newBonus = (newTotal * 2).toFixed(0);
 
-  document.getElementById('pconf-gain').textContent  = gain > 0 ? '+' + gain + ' очков' : '—';
-  document.getElementById('pconf-total').textContent = gain > 0 ? newTotal + ' очков' : G.prestigePoints + ' очков';
-  document.getElementById('pconf-bonus').textContent = '+' + (G.prestigePoints * 2).toFixed(0) + '% к sat/sec';
+  document.getElementById('pconf-gain').textContent = gain > 0 ? '+' + gain + ' очков' : '—';
+  document.getElementById('pconf-total').textContent = gain > 0
+    ? curPoints + ' → ' + newTotal + ' очков'
+    : curPoints + ' очков';
+  document.getElementById('pconf-bonus').textContent = gain > 0
+    ? '+' + curBonus + '% → +' + newBonus + '%'
+    : '+' + curBonus + '%';
   document.getElementById('prestige-confirm').disabled = gain <= 0;
 
   document.getElementById('prestige-modal').classList.add('show');
@@ -176,6 +189,7 @@ document.getElementById('prestige-confirm').addEventListener('click', () => {
   renderShop();
   renderUpgrades();
   renderAchievements();
+  renderGemShop();
   checkAchievements();
   save();
 });
@@ -183,10 +197,10 @@ document.getElementById('prestige-confirm').addEventListener('click', () => {
 // ── Offline modal ─────────────────────────
 
 function showOfflineModal(sec, earned) {
-  const MAX = 7200;
+  const MAX = calcOfflineMax();
   const pct = Math.min(sec / MAX * 100, 100).toFixed(1);
 
-  document.getElementById('offline-earned').textContent  = '+' + fmtBalance(earned);
+  document.getElementById('offline-earned').textContent = '+' + fmtBalance(earned);
   document.getElementById('offline-bar-fill').style.width = pct + '%';
   document.getElementById('offline-time-val').textContent = fmtTime(sec) +
     ' из ' + fmtTime(MAX);
@@ -198,31 +212,36 @@ document.getElementById('offline-close').addEventListener('click', () => {
   document.getElementById('offline-modal').classList.remove('show');
 });
 
+// ── Gem modal ───────────────────────────────
+
+document.getElementById('gem-btn').addEventListener('click', () => {
+  renderGemShop();
+  document.getElementById('gem-modal').classList.add('show');
+});
+document.getElementById('gem-modal-close').addEventListener('click', () => {
+  document.getElementById('gem-modal').classList.remove('show');
+});
+document.getElementById('gem-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('gem-modal'))
+    document.getElementById('gem-modal').classList.remove('show');
+});
+
 // ── Buy mode FAB ────────────────────────
 
 (function initBuyMode() {
-  const MODES  = [1, 10, 100, 0];
+  const MODES = [1, 10, 100, 0];
   const LABELS = ['×1', '×10', '×100', 'Макс'];
   const fab = document.getElementById('buy-mode-fab');
 
   fab.addEventListener('click', () => {
-    const idx  = MODES.indexOf(G.buyMode);
+    const idx = MODES.indexOf(G.buyMode);
     const next = (idx + 1) % MODES.length;
-    G.buyMode  = MODES[next];
+    G.buyMode = MODES[next];
     fab.textContent = LABELS[next];
     fab.dataset.mode = G.buyMode;
     renderShop();
   });
 })();
-
-// ── Boost ─────────────────────────────────
-
-document.getElementById('boost-btn').addEventListener('click', () => {
-  if (G.boostCharges <= 0 || G.boostActive) return;
-  activateBoost();
-  renderBoost();
-  showPopup('⚡', 'Буст активирован!', '×2 к sat/sec на 30 секунд');
-});
 
 // ── Tab navigation ────────────────────────
 
@@ -237,10 +256,10 @@ document.getElementById('boost-btn').addEventListener('click', () => {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById(tab + '-panel').classList.add('active');
 
-      if (tab === 'shop')     renderShop();
+      if (tab === 'shop') renderShop();
       if (tab === 'upgrades') renderUpgrades();
-      if (tab === 'ach')      renderAchievements();
-      if (tab === 'stats')    renderStatPanel();
+      if (tab === 'ach') renderAchievements();
+      if (tab === 'stats') renderStatPanel();
     });
   });
 })();
@@ -254,15 +273,16 @@ document.getElementById('boost-btn').addEventListener('click', () => {
 
   function coinReward() {
     // 15 секунд SPS или 50 кликов — что больше
-    return Math.max(Math.ceil(G.sps * 15), calcClickPow() * 50);
+    const base = Math.max(Math.ceil(G.sps * 15), calcClickPow() * 50);
+    return G.gemUpgrades['coin_gem'] ? base * 2 : base;
   }
 
   function spawnCoin() {
     if (activeCoins >= MAX_COINS) { scheduleNext(); return; }
 
-    const reward   = coinReward();
-    const fallDur  = (4.5 + Math.random() * 3).toFixed(2); // 4.5–7.5s
-    const leftPct  = 8 + Math.random() * 72; // 8%–80%
+    const reward = coinReward();
+    const fallDur = (4.5 + Math.random() * 3).toFixed(2); // 4.5–7.5s
+    const leftPct = 8 + Math.random() * 72; // 8%–80%
 
     const el = document.createElement('div');
     el.className = 'drop-coin';
@@ -270,7 +290,7 @@ document.getElementById('boost-btn').addEventListener('click', () => {
     el.style.setProperty('--fall-dur', fallDur + 's');
 
     el.innerHTML =
-      '<div class="drop-coin-icon">🪙</div>' +
+      '<div class="drop-coin-icon">₿</div>' +
       '<div class="drop-coin-val">' + fmt(reward) + ' sat</div>';
 
     activeCoins++;
@@ -280,7 +300,7 @@ document.getElementById('boost-btn').addEventListener('click', () => {
       e.stopPropagation();
 
       // Reward
-      G.sat   += reward;
+      G.sat += reward;
       G.total += reward;
       renderHeader();
       renderStats();
@@ -292,7 +312,7 @@ document.getElementById('boost-btn').addEventListener('click', () => {
       burst.className = 'drop-collect-burst';
       const r = app.getBoundingClientRect();
       burst.style.left = (e.clientX - r.left) + 'px';
-      burst.style.top  = (e.clientY - r.top)  + 'px';
+      burst.style.top = (e.clientY - r.top) + 'px';
       app.appendChild(burst);
       setTimeout(() => burst.remove(), 480);
 
@@ -321,25 +341,138 @@ document.getElementById('boost-btn').addEventListener('click', () => {
   setTimeout(spawnCoin, (20 + Math.random() * 15) * 1000);
 })();
 
+// ── Falling boost ─────────────────────────
+
+(function initDropBoost() {
+  const app = document.getElementById('app');
+  let pending = false;  // true while a boost item is on screen
+
+  function spawnBoost() {
+    // Don't overlap with an existing boost item or an active boost
+    if (pending || (G.boostActive && Date.now() < G.boostEndsAt)) { scheduleNext(); return; }
+    pending = true;
+
+    const fallDur = (5 + Math.random() * 3).toFixed(2);
+    const leftPct = 8 + Math.random() * 72;
+
+    const el = document.createElement('div');
+    el.className = 'drop-boost';
+    el.style.left = leftPct + '%';
+    el.style.setProperty('--fall-dur', fallDur + 's');
+    el.innerHTML = `<div class="drop-boost-icon">⚡</div><div class="drop-boost-val">×2 на ${G.gemUpgrades['boost_gem'] ? 60 : 30}с</div>`;
+
+    el.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      activateBoost();
+      renderBoost();
+      showNotice('⚡', 'Буст пойман!', '×2 к sat/sec на 30 секунд');
+      // burst effect
+      const burst = document.createElement('div');
+      burst.className = 'drop-collect-burst';
+      const r = app.getBoundingClientRect();
+      burst.style.left = (e.clientX - r.left) + 'px';
+      burst.style.top = (e.clientY - r.top) + 'px';
+      app.appendChild(burst);
+      setTimeout(() => burst.remove(), 480);
+      el.remove();
+      pending = false;
+      scheduleNext();
+    });
+
+    el.addEventListener('animationend', () => {
+      if (el.parentNode) { el.remove(); pending = false; scheduleNext(); }
+    });
+
+    app.appendChild(el);
+  }
+
+  function scheduleNext() {
+    const delay = (60 + Math.random() * 60) * 1000; // 60–120 s
+    setTimeout(spawnBoost, delay);
+  }
+
+  // First boost after 30–60 seconds
+  setTimeout(spawnBoost, (30 + Math.random() * 30) * 1000);
+})();
+
+// ── Falling gems ───────────────────────────
+
+(function initDropGems() {
+  const app = document.getElementById('app');
+  let pending = false;
+
+  function spawnGem() {
+    if (pending) { scheduleNext(); return; }
+    pending = true;
+
+    const fallDur = (6 + Math.random() * 4).toFixed(2); // 6–10s — медленно, редкость
+    const leftPct = 10 + Math.random() * 68;
+
+    const el = document.createElement('div');
+    el.className = 'drop-gem';
+    el.style.left = leftPct + '%';
+    el.style.setProperty('--fall-dur', fallDur + 's');
+    el.innerHTML = '<div class="drop-gem-icon">💎</div><div class="drop-gem-val">+1 💎</div>';
+
+    el.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+      G.gems = (G.gems || 0) + 1;
+      renderGemCount();
+      save();
+      showNotice('💎', 'Кристалл пойман!', 'У тебя ' + G.gems + ' драг. Открой 💎 в шапке');
+
+      const burst = document.createElement('div');
+      burst.className = 'drop-collect-burst gem-burst';
+      const r = app.getBoundingClientRect();
+      burst.style.left = (e.clientX - r.left) + 'px';
+      burst.style.top = (e.clientY - r.top) + 'px';
+      app.appendChild(burst);
+      setTimeout(() => burst.remove(), 480);
+
+      spawnFloat(e.clientX, e.clientY, '+1 💎');
+      el.remove();
+      pending = false;
+      scheduleNext();
+    });
+
+    el.addEventListener('animationend', () => {
+      if (el.parentNode) { el.remove(); pending = false; scheduleNext(); }
+    });
+
+    app.appendChild(el);
+  }
+
+  function scheduleNext() {
+    // Редкие: 5–15 минут
+    const lo = 5;
+    const hi = 15;
+    const delay = (lo + Math.random() * (hi - lo)) * 60 * 1000;
+    setTimeout(spawnGem, delay);
+  }
+
+  // Первый кристалл через 2–4 минуты
+  setTimeout(spawnGem, (120 + Math.random() * 120) * 1000);
+})();
+
 // ── Game loop (200 ms tick) ───────────────
 
-let _lastTick             = Date.now();
+let _lastTick = Date.now();
 let _ticksSinceShopRender = 0;
-let _autoClickVisTimer    = 0;
-let _spsAccum             = 0;   // fractional sat accumulator for sps tick
+let _autoClickVisTimer = 0;
+let _spsAccum = 0;   // fractional sat accumulator for sps tick
 
 setInterval(() => {
   const now = Date.now();
-  const dt  = Math.min((now - _lastTick) / 1000, 1);
-  _lastTick  = now;
+  const dt = Math.min((now - _lastTick) / 1000, 1);
+  _lastTick = now;
 
-  G.sps      = calcSps();
+  G.sps = calcSps();
   if (G.sps > G.spsRecord) G.spsRecord = G.sps;
   _spsAccum += G.sps * dt;
   const earn = Math.floor(_spsAccum);
   _spsAccum -= earn;
-  G.sat      += earn;
-  G.total    += earn;
+  G.sat += earn;
+  G.total += earn;
   G.playtime += dt;
 
   renderHeader();
@@ -358,9 +491,9 @@ setInterval(() => {
       const earned = calcAutoClick();
       const coinWrap = document.getElementById('coin-wrap');
       if (coinWrap) {
-        const r  = coinWrap.getBoundingClientRect();
-        const cx = r.left + r.width  / 2;
-        const cy = r.top  + r.height / 2;
+        const r = coinWrap.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
         fireClick(cx, cy, earned);
       }
     }
@@ -370,18 +503,14 @@ setInterval(() => {
 
   // Boost tick
   if (G.boostActive && Date.now() >= G.boostEndsAt) G.boostActive = false;
-  if (G.boostCharges < 3 && G.boostChargeAt > 0 && Date.now() >= G.boostChargeAt) {
-    G.boostCharges++;
-    G.boostChargeAt = G.boostCharges < 3 ? G.boostChargeAt + 300000 : 0;
-  }
 
   // Re-render shop/upgrades only every 5 ticks (1 s) to save CPU
   _ticksSinceShopRender++;
   if (_ticksSinceShopRender >= 5) {
     _ticksSinceShopRender = 0;
-    if (document.getElementById('shop-panel').classList.contains('active'))     renderShop();
+    if (document.getElementById('shop-panel').classList.contains('active')) renderShop();
     if (document.getElementById('upgrades-panel').classList.contains('active')) renderUpgrades();
-    if (document.getElementById('stats-panel').classList.contains('active'))    renderStatPanel();
+    if (document.getElementById('stats-panel').classList.contains('active')) renderStatPanel();
   }
 
   checkAchievements();
@@ -407,7 +536,7 @@ setInterval(save, 15000);
   // ── Offline earnings ────────────────────
   if (offlineSec >= 30 && G.sps > 0) {
     const earned = Math.floor(G.sps * offlineSec);
-    G.sat   += earned;
+    G.sat += earned;
     G.total += earned;
     showOfflineModal(offlineSec, earned);
   }
@@ -418,6 +547,7 @@ setInterval(save, 15000);
   renderUpgrades();
   renderAchievements();
   renderBoost();
+  renderGemShop();
   checkAchievements();
   save();
 })();

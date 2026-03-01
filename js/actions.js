@@ -76,6 +76,25 @@ function buyUpgrade(u) {
   save();
 }
 
+// ── Buy a gem upgrade ────────────────────────
+
+function buyGemUpgrade(u) {
+  if (G.gemUpgrades[u.id]) return;
+  if (u.requires && !G.gemUpgrades[u.requires]) return;
+  if (G.gems < u.cost) return;
+
+  G.gems -= u.cost;
+  G.gemUpgrades[u.id] = true;
+
+  recalcMults();
+  G.sps = calcSps();
+  renderHeader();
+  renderStats();
+  renderGemShop();
+  showNotice(u.icon, u.name + ' куплено!', u.desc);
+  save();
+}
+
 // ── Shared click executor ────────────────
 
 /** Award `power` sat, show full visual at (cx, cy). Used by player and managers. */
@@ -117,4 +136,7 @@ function doClick(cx, cy) {
   });
   coinEl.addEventListener('pointerup',    () => coinEl.classList.remove('clicked'));
   coinEl.addEventListener('pointerleave', () => coinEl.classList.remove('clicked'));
+
+  // iOS Safari: prevent double-tap zoom (user-scalable=no is ignored since iOS 10)
+  coinEl.addEventListener('touchend', e => e.preventDefault(), { passive: false });
 })();

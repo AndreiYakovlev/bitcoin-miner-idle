@@ -8,6 +8,7 @@
 </head>
 <body>
 <div id="app">
+<div id="boost-bg"></div>
 
 <!-- HEADER -->
 <div id="header">
@@ -23,6 +24,7 @@
   <div id="header-right">
     <div id="header-time">00:00:00</div>
     <div id="header-actions">
+      <button id="gem-btn" title="Кристальный магазин">💎 <span id="gem-count">0</span></button>
       <button id="prestige-open-btn" title="Престиж">♻️</button>
       <button id="theme-btn" title="Сменить тему">☀️</button>
     </div>
@@ -66,13 +68,7 @@
 
     <!-- Bottom actions -->
     <div id="mine-bottom">
-      <div id="boost-wrap">
-        <button id="boost-btn">
-          <span class="boost-charges">3/3</span>
-          <span class="boost-label">⚡ Буст ×2 на 30с</span>
-        </button>
-        <div id="boost-info">Все заряды готовы</div>
-      </div>
+      <div id="boost-status"></div>
     </div>
 
     <!-- Hidden prestige-btn kept for JS/renderStats compat -->
@@ -147,6 +143,30 @@
   </div>
 </div>
 
+<!-- NOTICE POPUP (boost / events) -->
+<div id="notice-popup">
+  <div class="notice-icon" id="notice-icon"></div>
+  <div>
+    <div class="notice-name" id="notice-name"></div>
+    <div class="notice-desc" id="notice-desc"></div>
+  </div>
+</div>
+
+<!-- GEM SHOP MODAL -->
+<div id="gem-modal">
+  <div id="gem-box">
+    <div id="gem-modal-hd">
+      <span id="gem-modal-icon">💎</span>
+      <span id="gem-modal-title">Кристальный магазин</span>
+    </div>
+    <div id="gem-modal-balance">Кристаллов: <b id="gem-modal-count">0</b></div>
+    <div id="gem-modal-desc">Кристаллы не сбрасываются при престиже. Падают редко с неба — поймай и открывай постоянные улучшения для всех раундов.</div>
+    <div id="gems-list"></div>
+    <div id="gem-exchange"></div>
+    <button id="gem-modal-close">Закрыть</button>
+  </div>
+</div>
+
 <!-- PRESTIGE CONFIRM MODAL -->
 <div id="prestige-modal">
   <div id="prestige-box">
@@ -166,7 +186,7 @@
     </div>
     <div id="prestige-modal-desc">Сброс прогресса. Достижения сохраняются.</div>
     <div class="prestige-modal-row">
-      <span>Очков за этот ранд</span>
+      <span>Очков за этот раунд</span>
       <span id="pconf-gain"></span>
     </div>
     <div class="prestige-modal-row">
@@ -174,7 +194,7 @@
       <span id="pconf-total"></span>
     </div>
     <div class="prestige-modal-row">
-      <span>Новый бонус</span>
+      <span>Текущий бонус</span>
       <span id="pconf-bonus"></span>
     </div>
     <div id="prestige-modal-btns">

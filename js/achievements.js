@@ -30,6 +30,20 @@ function showPopup(icon, name, desc) {
   _achQueue.push({ icon, name, desc });
   if (!_achShowing) _showNextAch();
 }
+
+// ── Generic notice popup (non-achievement) ─
+let _noticeTimer = null;
+function showNotice(icon, name, desc) {
+  document.getElementById('notice-icon').textContent = icon;
+  document.getElementById('notice-name').textContent = name;
+  document.getElementById('notice-desc').textContent = desc;
+  const el = document.getElementById('notice-popup');
+  el.classList.remove('show');
+  void el.offsetWidth; // reflow to restart animation
+  el.classList.add('show');
+  clearTimeout(_noticeTimer);
+  _noticeTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
 function _showNextAch() {
   if (_achQueue.length === 0) { _achShowing = false; return; }
   _achShowing = true;

@@ -28,10 +28,11 @@ const G = {
   // ─ Frenzy (session only) ──────────────────
   clickFrenzy:    0,   // 0-100, bonus % to click power
   // ─ Boosts ────────────────────────────────
-  boostCharges:   3,   // current charges (max 3)
   boostActive:    false,
   boostEndsAt:    0,   // ms timestamp when boost expires
-  boostChargeAt:  0,   // ms timestamp for next recharge
+  // ─ Gems (постоянные, не сбрасываются престижем) ───
+  gems:           0,
+  gemUpgrades:    {},
   // ─ Stats (lifetime) ──────────────────────
   totalEver:       0,  // sat earned across ALL runs
   totalDevicesEver:0,  // devices bought across ALL runs
@@ -53,8 +54,7 @@ function getMinerPrice(m) {
 function calcSps() {
   let s = 0;
   for (const m of MINERS) s += m.baseSps * (G.miners[m.id] || 0);
-  const boost = G.boostActive && Date.now() < G.boostEndsAt ? 2 : 1;
-  return s * G.allMult * calcPrestigeBonus() * boost;
+  return s * G.allMult * calcPrestigeBonus();
 }
 
 /** Total price for buying `qty` of miner `m` starting from current owned count. */
@@ -79,13 +79,10 @@ function calcMaxBuy(m) {
   return qty;
 }
 
-/** Activate a boost charge (×2 sps for 30 s). */
+/** Activate boost (×2 for 30/60 s). */
 function activateBoost() {
-  if (G.boostCharges <= 0 || G.boostActive) return;
-  G.boostCharges--;
-  G.boostActive  = true;
-  G.boostEndsAt  = Date.now() + 30000;
-  if (G.boostChargeAt === 0) G.boostChargeAt = Date.now() + 300000;
+  G.boostActive = true;
+  G.boostEndsAt = Date.now() + calcBoostDuration();
 }
 
 /** Bonus multiplier from prestige points: +2% per point. */
@@ -95,7 +92,22 @@ function calcPrestigeBonus() {
 
 /** Points earned if prestige is triggered now. */
 function calcPrestigeGain() {
-  return Math.floor(Math.sqrt(G.sps / 100));
+  const base = Math.floor(Math.sqrt(G.sps / 100));
+  if (base <= 0) return 0;
+  return base;
+}
+
+/** Max offline earnings seconds based on gem upgrades. */
+function calcOfflineMax() {
+  if (G.gemUpgrades['offline48h']) return 172800; // 48h
+  if (G.gemUpgrades['offline12h']) return 43200;  // 12h
+  if (G.gemUpgrades['offline4h'])  return 14400;  // 4h
+  return 7200; // default 2h
+}
+
+/** Boost duration ms based on boost_gem. */
+function calcBoostDuration() {
+  return G.gemUpgrades['boost_gem'] ? 60000 : 30000;
 }
 
 /** Sat earned per click (integer). Includes active boost ×2. */
@@ -133,7 +145,7 @@ function calcManagerMaxBuy(m) {
   return qty;
 }
 
-/** Recalculate clickMult and allMult from purchased upgrades. */
+/** Recalculate clickMult and allMult from purchased upgrades + gem upgrades. */
 function recalcMults() {
   let cm = 1, am = 1;
   for (const u of UPGRADES) {
@@ -142,11 +154,15 @@ function recalcMults() {
       else                    am *= u.mult;
     }
   }
+  for (const u of GEM_UPGRADES) {
+    if (G.gemUpgrades[u.id] && u.type === 'click') cm *= u.mult;
+    if (G.gemUpgrades[u.id] && u.type === 'all')   am *= u.mult;
+  }
   G.clickMult = cm;
   G.allMult   = am;
 }
 
-/** Reset run but keep prestige + achievements. */
+/** Reset run but keep prestige + achievements + gems. */
 function doPrestige() {
   const gain = calcPrestigeGain();
   if (gain <= 0) return false;
@@ -159,6 +175,8 @@ function doPrestige() {
   const savedDevicesEver    = G.totalDevicesEver + G.devices;
   const savedBestGain       = Math.max(G.bestPrestigeGain, gain);
   const savedSpsRecord      = G.spsRecord;
+  const savedGems           = G.gems;
+  const savedGemUpgrades    = G.gemUpgrades;
 
   // reset all run data
   G.sat       = 0;
@@ -183,7 +201,8 @@ function doPrestige() {
   G.totalDevicesEver= savedDevicesEver;
   G.bestPrestigeGain= savedBestGain;
   G.spsRecord       = savedSpsRecord;
-
+  G.gems            = savedGems;
+  G.gemUpgrades     = savedGemUpgrades;
   return true;
 }
 
@@ -203,13 +222,13 @@ function save() {
       achiev:         G.achiev,
       prestigePoints: G.prestigePoints,
       prestigeRuns:   G.prestigeRuns,
-      boostCharges:   G.boostCharges,
-      boostChargeAt:  G.boostChargeAt,
       totalEver:        G.totalEver,
       totalDevicesEver: G.totalDevicesEver,
       spsRecord:        G.spsRecord,
       bestPrestigeGain: G.bestPrestigeGain,
       managers:         G.managers,
+      gems:             G.gems,
+      gemUpgrades:      G.gemUpgrades,
       lastSeen:       Date.now(),
     }));
   } catch (_) {}
@@ -229,23 +248,15 @@ function load() {
     if (d.achiev          != null) G.achiev          = d.achiev;
     if (d.prestigePoints  != null) G.prestigePoints  = d.prestigePoints;
     if (d.prestigeRuns    != null) G.prestigeRuns    = d.prestigeRuns;
-    if (d.boostCharges    != null) G.boostCharges    = d.boostCharges;
-    if (d.boostChargeAt   != null) {
-      G.boostChargeAt = d.boostChargeAt;
-      // process recharges that happened while offline
-      const now = Date.now();
-      while (G.boostCharges < 3 && G.boostChargeAt > 0 && now >= G.boostChargeAt) {
-        G.boostCharges++;
-        G.boostChargeAt = G.boostCharges < 3 ? G.boostChargeAt + 300000 : 0;
-      }
-    }
     if (d.totalEver        != null) G.totalEver        = d.totalEver;
     if (d.totalDevicesEver != null) G.totalDevicesEver = d.totalDevicesEver;
     if (d.spsRecord        != null) G.spsRecord        = d.spsRecord;
     if (d.bestPrestigeGain != null) G.bestPrestigeGain = d.bestPrestigeGain;
     if (d.managers         != null) G.managers         = d.managers;
+    if (d.gems             != null) G.gems             = d.gems;
+    if (d.gemUpgrades      != null) G.gemUpgrades      = d.gemUpgrades;
     // return offline seconds for main.js to handle
-    return d.lastSeen ? Math.min((Date.now() - d.lastSeen) / 1000, 7200) : 0;
+    return d.lastSeen ? Math.min((Date.now() - d.lastSeen) / 1000, calcOfflineMax()) : 0;
   } catch (_) { return 0; }
 }
 
