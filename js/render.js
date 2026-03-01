@@ -61,12 +61,14 @@ function renderShop() {
   list.innerHTML = '';
 
   const mode = G.buyMode;
+  let affordCount = 0;
 
   for (const m of MINERS) {
     const owned    = G.miners[m.id] || 0;
     const qty      = mode === 0 ? calcMaxBuy(m) : mode;
     const price    = qty > 0 ? calcBulkPrice(m, qty) : getMinerPrice(m);
     const afford   = qty > 0 && G.sat >= price;
+    if (afford) affordCount++;
     const qtyLabel = mode === 0 ? 'Макс×' + qty : '×' + mode;
     const spsEach  = m.baseSps * G.allMult;
     const spsText  = spsEach >= 1
@@ -102,6 +104,7 @@ function renderShop() {
     const qty      = mode === 0 ? calcManagerMaxBuy(m) : mode;
     const price    = qty > 0 ? calcManagerBulkPrice(m, qty) : Math.ceil(m.basePrice);
     const afford   = qty > 0 && G.sat >= price;
+    if (afford) affordCount++;
     const qtyLabel = mode === 0 ? 'Макс×' + qty : '×' + mode;
     const cps      = (m.clicksPerSec * calcClickPow()).toFixed(1);
 
@@ -122,6 +125,33 @@ function renderShop() {
     card.addEventListener('click', () => buyManager(m));
     list.appendChild(card);
   }
+
+  // update shop badge
+  const shopBadge = document.getElementById('shop-badge');
+  if (shopBadge) {
+    shopBadge.textContent = affordCount > 99 ? '99+' : affordCount;
+    shopBadge.style.display = affordCount > 0 ? 'block' : 'none';
+  }
+}
+
+/** Lightweight badge-only update — called every game tick. */
+function updateShopBadge() {
+  const badge = document.getElementById('shop-badge');
+  if (!badge) return;
+  const mode = G.buyMode;
+  let count = 0;
+  for (const m of MINERS) {
+    const qty   = mode === 0 ? calcMaxBuy(m) : mode;
+    const price = qty > 0 ? calcBulkPrice(m, qty) : getMinerPrice(m);
+    if (qty > 0 && G.sat >= price) count++;
+  }
+  for (const m of MANAGERS) {
+    const qty   = mode === 0 ? calcManagerMaxBuy(m) : mode;
+    const price = qty > 0 ? calcManagerBulkPrice(m, qty) : Math.ceil(m.basePrice);
+    if (qty > 0 && G.sat >= price) count++;
+  }
+  badge.textContent    = count > 99 ? '99+' : count;
+  badge.style.display  = count > 0 ? 'block' : 'none';
 }
 
 // ── Boost ─────────────────────────────────
@@ -174,6 +204,15 @@ function renderUpgrades() {
   const badge = document.getElementById('upg-badge');
   badge.textContent    = avail;
   badge.style.display  = avail > 0 ? 'block' : 'none';
+}
+
+/** Lightweight upgrades badge update — called every game tick. */
+function updateUpgBadge() {
+  const badge = document.getElementById('upg-badge');
+  if (!badge) return;
+  const avail = UPGRADES.filter(u => !G.upgrades[u.id] && G.sat >= u.price).length;
+  badge.textContent   = avail;
+  badge.style.display = avail > 0 ? 'block' : 'none';
 }
 
 function _appendSectionTitle(parent, text) {

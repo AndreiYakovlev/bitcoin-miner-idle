@@ -342,6 +342,8 @@ setInterval(() => {
   renderHeader();
   renderStats();
   renderBoost();
+  updateShopBadge();
+  updateUpgBadge();
   updateFrenzy(dt);
 
   // Boost tick
