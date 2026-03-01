@@ -5,33 +5,10 @@
 **Mobile-first Bitcoin clicker & idle game — pure HTML/CSS/JS, zero dependencies**
 
 [![Live Demo](https://img.shields.io/badge/▶%20Play%20Now-GitHub%20Pages-f7931a?style=for-the-badge&logo=github)](https://AndreiYakovlev.github.io/bitcoin-miner-idle/)
-[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
 </div>
 
----
-
-## 📸 Screenshots
-
-<div align="center">
-
-| ⛏️ Mine | 🛒 Shop |
-|:---:|:---:|
-| ![Mine screen](screenshots/mine.png) | ![Shop screen](screenshots/shop.png) |
-
-| ⚡ Upgrades | 🏆 Achievements |
-|:---:|:---:|
-| ![Upgrades screen](screenshots/upgrades.png) | ![Achievements screen](screenshots/achievements.png) |
-
-| 📊 Stats |
-|:---:|
-| ![Stats screen](screenshots/stats.png) |
-
-</div>
-
----
+![Mine screen](screenshots/mine.png)
 
 ## 🎮 Gameplay
 
@@ -47,8 +24,6 @@ Start with **0 BTC** and tap the coin to earn your first satoshi. Reinvest into 
 Tap coin  →  Earn satoshi  →  Buy miners  →  Buy upgrades  →  Earn faster  →  Prestige  →  …
 ```
 
----
-
 ## 🎯 Content
 
 - **⛏️ 22 miners** — from a GTX 1060 to a Dyson Sphere, each ×1.15 more expensive per purchase
@@ -60,13 +35,9 @@ Tap coin  →  Earn satoshi  →  Buy miners  →  Buy upgrades  →  Earn faste
 - **⚡ Frenzy** — random events that spike click income for a short time
 - **📊 Stats tab** — full session breakdown
 
----
-
 ## 💾 Save system
 
 Progress is auto-saved to **`localStorage`** every 15 seconds and on every purchase. No account or server needed — your save lives in the browser.
-
----
 
 ## 🗂️ Project structure
 
