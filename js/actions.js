@@ -5,7 +5,7 @@
 'use strict';
 
 // ── Frenzy config ─────────────────────────
-const FRENZY_THRESHOLD  = 500;  // ms between clicks to keep frenzy growing
+const FRENZY_THRESHOLD  = 1000;  // ms between clicks to keep frenzy growing
 const FRENZY_RATE_UP    = 1;   // points gained per second while clicking fast
 const FRENZY_RATE_DOWN  = 25;   // points lost per second when idle
 

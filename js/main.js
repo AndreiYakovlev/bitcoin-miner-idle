@@ -180,6 +180,82 @@ document.getElementById('boost-btn').addEventListener('click', () => {
   });
 })();
 
+// ── Falling coins ──────────────────────────
+
+(function initDropCoins() {
+  const app = document.getElementById('app');
+  let activeCoins = 0;
+  const MAX_COINS = 3;
+
+  function coinReward() {
+    // 15 секунд SPS или 50 кликов — что больше
+    return Math.max(Math.ceil(G.sps * 15), calcClickPow() * 50);
+  }
+
+  function spawnCoin() {
+    if (activeCoins >= MAX_COINS) { scheduleNext(); return; }
+
+    const reward   = coinReward();
+    const fallDur  = (4.5 + Math.random() * 3).toFixed(2); // 4.5–7.5s
+    const leftPct  = 8 + Math.random() * 72; // 8%–80%
+
+    const el = document.createElement('div');
+    el.className = 'drop-coin';
+    el.style.left = leftPct + '%';
+    el.style.setProperty('--fall-dur', fallDur + 's');
+
+    el.innerHTML =
+      '<div class="drop-coin-icon">🪙</div>' +
+      '<div class="drop-coin-val">' + fmt(reward) + ' sat</div>';
+
+    activeCoins++;
+
+    // Collect on tap
+    el.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+
+      // Reward
+      G.sat   += reward;
+      G.total += reward;
+      renderHeader();
+      renderStats();
+      checkAchievements();
+      save();
+
+      // Burst effect
+      const burst = document.createElement('div');
+      burst.className = 'drop-collect-burst';
+      const r = app.getBoundingClientRect();
+      burst.style.left = (e.clientX - r.left) + 'px';
+      burst.style.top  = (e.clientY - r.top)  + 'px';
+      app.appendChild(burst);
+      setTimeout(() => burst.remove(), 480);
+
+      // Float text
+      spawnFloat(e.clientX, e.clientY, '+' + fmt(reward) + ' sat');
+
+      el.remove();
+      activeCoins--;
+    });
+
+    // Auto-remove when animation ends
+    el.addEventListener('animationend', () => {
+      if (el.parentNode) { el.remove(); activeCoins--; }
+    });
+
+    app.appendChild(el);
+    scheduleNext();
+  }
+
+  function scheduleNext() {
+    const delay = (15 + Math.random() * 25) * 1000; // 15–40 сек
+    setTimeout(spawnCoin, delay);
+  }
+
+  // First coin after 20–35 seconds
+  setTimeout(spawnCoin, (20 + Math.random() * 15) * 1000);
+})();
+
 // ── Game loop (200 ms tick) ───────────────
 
 let _lastTick             = Date.now();

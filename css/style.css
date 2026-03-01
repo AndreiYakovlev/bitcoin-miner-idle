@@ -914,6 +914,79 @@ html, body {
   width: 0%;
 }
 
+/* ─── FALLING COINS ────────────────────── */
+.drop-coin {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  z-index: 300;
+  pointer-events: auto;
+  transform-origin: center top;
+  animation: dropFall var(--fall-dur, 5s) linear forwards;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.drop-coin-icon {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #ffe57a 0%, #f7931a 50%, #b35500 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  box-shadow:
+    0 0 0 2px rgba(247,147,26,0.4),
+    0 0 16px rgba(247,147,26,0.7),
+    0 0 32px rgba(247,147,26,0.3);
+  animation: dropSpin 1.2s linear infinite, dropBob 0.9s ease-in-out infinite alternate;
+  transition: transform 0.08s;
+}
+.drop-coin:active .drop-coin-icon { transform: scale(0.88); }
+
+.drop-coin-val {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  border-radius: 8px;
+  padding: 1px 6px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+@keyframes dropFall {
+  0%   { top: -64px;  opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: 108%;   opacity: 0; }
+}
+@keyframes dropSpin {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+@keyframes dropBob {
+  from { margin-left: -8px; }
+  to   { margin-left:  8px; }
+}
+
+/* Collect burst */
+.drop-collect-burst {
+  position: absolute;
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  pointer-events: none;
+  z-index: 301;
+  transform: translate(-50%, -50%);
+  animation: collectBurst 0.45s ease-out forwards;
+}
+@keyframes collectBurst {
+  0%   { transform: translate(-50%,-50%) scale(0.4); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
+}
+
 #offline-close {
   margin-top: 20px;
   width: 100%; padding: 13px;
