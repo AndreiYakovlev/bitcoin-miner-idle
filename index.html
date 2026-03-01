@@ -21,13 +21,15 @@
   </div>
   <div id="header-right">
     <div id="header-time">00:00:00</div>
-    <button id="theme-btn" title="Сменить тему">☀️</button>
+    <div id="header-actions">
+      <button id="prestige-open-btn" title="Престиж">♻️</button>
+      <button id="theme-btn" title="Сменить тему">☀️</button>
+    </div>
   </div>
 </div>
 
 <!-- TICKER -->
 <div id="ticker-wrap">
-  <span id="ticker-icon">📡</span>
   <div id="ticker-text"></div>
 </div>
 
@@ -36,14 +38,8 @@
 
   <!-- MINE -->
   <div id="mine-panel" class="tab-panel active">
-    <div id="coin-wrap">
-      <div id="coin">₿</div>
-    </div>
-    <!-- Frenzy multiplier -->
-    <div id="frenzy-wrap">
-      <span id="frenzy-chip"></span>
-    </div>
-    <div class="click-info">+<strong id="click-power">1</strong> sat за клик</div>
+
+    <!-- Stats: top -->
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-label">Всего добыто</div>
@@ -59,31 +55,29 @@
       </div>
     </div>
 
-    <!-- Prestige block -->
-    <div id="prestige-block">
-      <div id="prestige-run-row">
-        <span class="prestige-run-label">Престиж</span>
-        <span id="prestige-run-val">0</span>
-      </div>
-      <div id="prestige-pts-total">0 очков × 2% = +0%</div>
-      <div id="prestige-progress-wrap">
-        <div id="prestige-bar"><div id="prestige-bar-fill"></div></div>
-        <div id="prestige-bar-label">до +1 очка</div>
-      </div>
-      <button id="prestige-btn" disabled>
-        <span id="prestige-gain-preview">нужно больше sat/s</span>
-        <span id="prestige-btn-label">♻️ Престиж</span>
-      </button>
+    <!-- Coin: center -->
+    <div id="coin-area">
+      <div id="frenzy-wrap"><span id="frenzy-chip"></span></div>
+      <div id="coin-wrap"><div id="coin">₿</div></div>
+      <div class="click-info">+<strong id="click-power">1</strong> sat за клик</div>
     </div>
 
-    <!-- Boost -->
-    <div id="boost-wrap">
-      <button id="boost-btn">
-        <span class="boost-charges">3/3</span>
-        <span class="boost-label">⚡ Буст ×2 на 30с</span>
-      </button>
-      <div id="boost-info">Все заряды готовы</div>
+    <!-- Bottom actions -->
+    <div id="mine-bottom">
+      <div id="boost-wrap">
+        <button id="boost-btn">
+          <span class="boost-charges">3/3</span>
+          <span class="boost-label">⚡ Буст ×2 на 30с</span>
+        </button>
+        <div id="boost-info">Все заряды готовы</div>
+      </div>
     </div>
+
+    <!-- Hidden prestige-btn kept for JS/renderStats compat -->
+    <button id="prestige-btn" disabled style="display:none">
+      <span id="prestige-gain-preview"></span>
+      <span id="prestige-btn-label"></span>
+    </button>
   </div>
 
   <!-- SHOP -->
@@ -155,6 +149,18 @@
   <div id="prestige-box">
     <div id="prestige-modal-icon">♻️</div>
     <div id="prestige-modal-title">Престиж</div>
+    <!-- Prestige live stats -->
+    <div id="prestige-stats-block">
+      <div id="prestige-run-row">
+        <span class="prestige-run-label">Сбросов</span>
+        <span id="prestige-run-val">0</span>
+      </div>
+      <div id="prestige-pts-total">0 очков × 2% = +0%</div>
+      <div id="prestige-progress-wrap">
+        <div id="prestige-bar"><div id="prestige-bar-fill"></div></div>
+        <div id="prestige-bar-label">до +1 очка</div>
+      </div>
+    </div>
     <div id="prestige-modal-desc">Сброс прогресса. Достижения сохраняются.</div>
     <div class="prestige-modal-row">
       <span>Очков за этот ранд</span>

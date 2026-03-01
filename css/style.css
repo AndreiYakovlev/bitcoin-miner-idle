@@ -110,10 +110,17 @@ html, body {
 #sps-display   { font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
 #header-right  { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 #header-time   { font-size: 0.65rem; color: var(--text2); white-space: nowrap; }
+#header-actions { display: flex; align-items: center; gap: 14px; }
 #theme-btn {
-  background: none; border: none; font-size: 0.85rem; cursor: pointer;
-  padding: 0; line-height: 1;
+  background: none; border: none; font-size: 1.25rem; cursor: pointer;
+  padding: 4px; line-height: 1;
 }
+#prestige-open-btn {
+  background: none; border: none; font-size: 1.25rem; cursor: pointer;
+  padding: 4px; line-height: 1; opacity: 0.7;
+  transition: opacity 0.15s, transform 0.15s;
+}
+#prestige-open-btn:hover { opacity: 1; transform: rotate(120deg); }
 
 /* ── Ticker ─────────────────────────────── */
 #ticker-wrap {
@@ -151,11 +158,31 @@ html, body {
 #mine-panel {
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   min-height: 100%;
-  padding: 24px 20px;
-  gap: 20px;
+  padding: 16px 20px 20px;
+  gap: 0;
 }
+
+#coin-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+#mine-bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#mine-bottom #boost-wrap { max-width: 100%; }
 
 /* Coin */
 #coin-wrap { position: relative; }
@@ -564,12 +591,43 @@ html, body {
 }
 #prestige-modal.show #prestige-box { transform: translateY(0); }
 
-#prestige-modal-icon  { font-size: 2.4rem; margin-bottom: 6px; }
+#prestige-modal-icon  { font-size: 2rem; margin-bottom: 4px; }
 #prestige-modal-title {
-  font-size: 1.1rem; font-weight: 900; margin-bottom: 4px;
+  font-size: 1.1rem; font-weight: 900; margin-bottom: 10px;
 }
+
+/* Prestige live stats inside modal */
+#prestige-stats-block {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#prestige-run-row {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.prestige-run-label { font-size: 0.68rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+#prestige-run-val { font-size: 1rem; font-weight: 900; color: var(--green); }
+#prestige-pts-total { font-size: 0.65rem; color: var(--text2); text-align: center; }
+#prestige-progress-wrap { display: flex; flex-direction: column; gap: 3px; }
+#prestige-bar {
+  width: 100%; height: 5px;
+  background: var(--bg5); border-radius: 99px; overflow: hidden;
+}
+#prestige-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+#prestige-bar-label { font-size: 0.6rem; color: var(--text2); text-align: center; }
+
 #prestige-modal-desc {
-  font-size: 0.68rem; color: var(--text2); margin-bottom: 16px; line-height: 1.4;
+  font-size: 0.68rem; color: var(--text2); margin-bottom: 10px; line-height: 1.4;
 }
 
 .prestige-modal-row {
@@ -596,7 +654,12 @@ html, body {
   font-size: 0.9rem; font-weight: 900; cursor: pointer;
   transition: filter 0.15s;
 }
-#prestige-confirm:active { filter: brightness(0.88); }
+#prestige-confirm:disabled {
+  background: var(--bg5); color: var(--text2);
+  border: 1px solid var(--border2); cursor: not-allowed;
+  filter: none;
+}
+#prestige-confirm:active:not(:disabled) { filter: brightness(0.88); }
 
 #balance-row {
   display: flex; align-items: center; gap: 5px;

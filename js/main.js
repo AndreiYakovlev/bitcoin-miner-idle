@@ -82,15 +82,15 @@ document.getElementById('reset-confirm').addEventListener('click', () => {
 
 // ── Prestige modal ───────────────────────
 
-document.getElementById('prestige-btn').addEventListener('click', () => {
+document.getElementById('prestige-open-btn').addEventListener('click', () => {
   const gain     = calcPrestigeGain();
-  if (gain <= 0) return;
   const newTotal = G.prestigePoints + gain;
   const newBonus = (newTotal * 2).toFixed(0);
 
-  document.getElementById('pconf-gain').textContent  = '+' + gain + ' очков';
-  document.getElementById('pconf-total').textContent = newTotal + ' очков';
-  document.getElementById('pconf-bonus').textContent = '+' + newBonus + '% к sat/sec';
+  document.getElementById('pconf-gain').textContent  = gain > 0 ? '+' + gain + ' очков' : '—';
+  document.getElementById('pconf-total').textContent = gain > 0 ? newTotal + ' очков' : G.prestigePoints + ' очков';
+  document.getElementById('pconf-bonus').textContent = '+' + (G.prestigePoints * 2).toFixed(0) + '% к sat/sec';
+  document.getElementById('prestige-confirm').disabled = gain <= 0;
 
   document.getElementById('prestige-modal').classList.add('show');
 });
