@@ -92,7 +92,7 @@ const ACHIEVEMENTS = [
 ];
 
 const MANAGERS = [
-  { id: 'intern',   name: 'Стажёр',         emoji: '👶', basePrice: 5000,    clicksPerSec: 0.5,  desc: 'Щёлкает мышью за вас' },
+  { id: 'intern',   name: 'Стажёр',         emoji: '👶', basePrice: 5000,    clicksPerSec: 1,    desc: 'Щёлкает мышью за вас' },
   { id: 'trader',   name: 'Трейдер',        emoji: '👨‍💼', basePrice: 60000,   clicksPerSec: 3,    desc: 'Торгует быстрее вас' },
   { id: 'quant',    name: 'Квант',          emoji: '🧑‍🔬', basePrice: 700000,  clicksPerSec: 15,   desc: 'Алгоритмы и цифры' },
   { id: 'aibot',    name: 'ИИ-бот',         emoji: '🤖', basePrice: 8000000, clicksPerSec: 80,   desc: 'Автоматический трейдинг' },

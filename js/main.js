@@ -128,7 +128,7 @@ window.resetGame = function () {
 
 /** Добавить сатоши: addSat(1e9) */
 window.addSat = function (amount) {
-  amount = Number(amount) || 0;
+  amount = Math.floor(Number(amount) || 0);
   G.sat   += amount;
   G.total += amount;
   renderHeader();
@@ -325,18 +325,21 @@ document.getElementById('boost-btn').addEventListener('click', () => {
 
 let _lastTick             = Date.now();
 let _ticksSinceShopRender = 0;
+let _autoClickVisTimer    = 0;
+let _spsAccum             = 0;   // fractional sat accumulator for sps tick
 
 setInterval(() => {
   const now = Date.now();
-  const dt  = Math.min((now - _lastTick) / 1000, 1); // cap at 1 s to avoid offline spike
+  const dt  = Math.min((now - _lastTick) / 1000, 1);
   _lastTick  = now;
 
   G.sps      = calcSps();
   if (G.sps > G.spsRecord) G.spsRecord = G.sps;
-  const earn = G.sps * dt;
-  const autoEarn = calcAutoClick() * dt;
-  G.sat      += earn + autoEarn;
-  G.total    += earn + autoEarn;
+  _spsAccum += G.sps * dt;
+  const earn = Math.floor(_spsAccum);
+  _spsAccum -= earn;
+  G.sat      += earn;
+  G.total    += earn;
   G.playtime += dt;
 
   renderHeader();
@@ -345,6 +348,25 @@ setInterval(() => {
   updateShopBadge();
   updateUpgBadge();
   updateFrenzy(dt);
+
+  // Auto-click: fire exactly once per second via shared fireClick
+  const autoClickSps = calcAutoClick();
+  if (autoClickSps > 0) {
+    _autoClickVisTimer += dt;
+    if (_autoClickVisTimer >= 1) {
+      _autoClickVisTimer -= 1;
+      const earned = calcAutoClick();
+      const coinWrap = document.getElementById('coin-wrap');
+      if (coinWrap) {
+        const r  = coinWrap.getBoundingClientRect();
+        const cx = r.left + r.width  / 2;
+        const cy = r.top  + r.height / 2;
+        fireClick(cx, cy, earned);
+      }
+    }
+  } else {
+    _autoClickVisTimer = 0;
+  }
 
   // Boost tick
   if (G.boostActive && Date.now() >= G.boostEndsAt) G.boostActive = false;
@@ -384,7 +406,7 @@ setInterval(save, 15000);
 
   // ── Offline earnings ────────────────────
   if (offlineSec >= 30 && G.sps > 0) {
-    const earned = G.sps * offlineSec;
+    const earned = Math.floor(G.sps * offlineSec);
     G.sat   += earned;
     G.total += earned;
     showOfflineModal(offlineSec, earned);

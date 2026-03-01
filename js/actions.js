@@ -76,21 +76,32 @@ function buyUpgrade(u) {
   save();
 }
 
+// ── Shared click executor ────────────────
+
+/** Award `power` sat, show full visual at (cx, cy). Used by player and managers. */
+function fireClick(cx, cy, power) {
+  G.sat   += power;
+  G.total += power;
+  const boosted = G.boostActive && Date.now() < G.boostEndsAt;
+  spawnFloat(cx, cy, (boosted ? '⚡' : '') + '+' + fmt(power) + ' sat');
+  const coin = document.getElementById('coin');
+  if (coin) {
+    coin.classList.add('clicked');
+    setTimeout(() => coin.classList.remove('clicked'), 100);
+  }
+}
+
 // ── Coin click ────────────────────────────
 
 function doClick(cx, cy) {
-  _frenzyLastClick  = Date.now();
+  _frenzyLastClick = Date.now();
   const base  = calcClickPow();
   const power = Math.round(base * (1 + G.clickFrenzy / 100));
-  G.sat    += power;
-  G.total  += power;
   G.clicks++;
-
+  fireClick(cx, cy, power);
   renderHeader();
   renderStats();
   checkAchievements();
-  const boosted = G.boostActive && Date.now() < G.boostEndsAt;
-  spawnFloat(cx, cy, (boosted ? '⚡' : '') + '+' + fmt(power) + ' sat');
   save();
 }
 

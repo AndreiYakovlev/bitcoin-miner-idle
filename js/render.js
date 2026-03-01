@@ -406,3 +406,17 @@ function spawnFloat(cx, cy, text) {
     setTimeout(() => ripple.remove(), 580);
   }
 }
+
+/** Subtle float text for auto-click — no sparks, smaller, grey */
+function spawnAutoFloat(cx, cy, text) {
+  const app  = document.getElementById('app');
+  const rect = app.getBoundingClientRect();
+  const el   = document.createElement('div');
+  el.className   = 'float-text auto-float';
+  el.textContent = text;
+  const ox = (Math.random() * 50) - 25;
+  el.style.left = (cx - rect.left + ox - 20) + 'px';
+  el.style.top  = (cy - rect.top  - 30 + Math.random() * 20 - 10) + 'px';
+  app.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}

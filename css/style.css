@@ -275,7 +275,13 @@ html, body {
   background: linear-gradient(130deg, transparent 42%, rgba(255,255,255,0.22) 50%, transparent 58%);
   animation: coinShine 2.8s linear infinite;
 }
-#coin.clicked { transform: scale(0.92) !important; }
+#coin.clicked      { transform: scale(0.92) !important; }
+#coin.auto-clicked { animation: autoClickPulse 0.18s ease-out forwards !important; }
+@keyframes autoClickPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
 
 @keyframes coinPulse {
   0%,100% { box-shadow: 0 0 0 4px rgba(247,147,26,0.2),  0 0 40px rgba(247,147,26,0.4),  0 0 90px  rgba(247,147,26,0.15); }
@@ -377,6 +383,17 @@ html, body {
   text-shadow: 0 0 8px currentColor;
   transform-origin: center bottom;
   animation: floatUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.float-text.auto-float {
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--text2);
+  text-shadow: none;
+  opacity: 0.7;
+  animation: floatUpSoft 0.9s ease-out forwards;
+}
+@keyframes floatUpSoft {
+  0%   { opacity: 0.7; transform: translateY(0); }
+  100% { opacity: 0;   transform: translateY(-44px); }
 }
 @keyframes floatUp {
   0%   { opacity: 1; transform: translateY(0)   scale(0.5); }
