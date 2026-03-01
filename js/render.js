@@ -316,12 +316,51 @@ function renderFrenzy() {
 function spawnFloat(cx, cy, text) {
   const app  = document.getElementById('app');
   const rect = app.getBoundingClientRect();
-  const el   = document.createElement('div');
+  const lx   = cx - rect.left;
+  const ly   = cy - rect.top;
+
+  // Color by frenzy level
+  const pct = Math.round(G.clickFrenzy);
+  const color = pct >= 80 ? '#ff6a00'
+              : pct >= 50 ? '#f7931a'
+              : pct >= 20 ? '#ffc15e'
+              : 'var(--green)';
+
+  // Floating text
+  const el = document.createElement('div');
   el.className   = 'float-text';
   el.textContent = text;
-  const ox  = (Math.random() * 50) - 25;
-  el.style.left  = (cx - rect.left + ox - 15) + 'px';
-  el.style.top   = (cy - rect.top  - 10)      + 'px';
+  el.style.color = color;
+  const ox = (Math.random() * 40) - 20;
+  el.style.left = (lx + ox - 20) + 'px';
+  el.style.top  = (ly - 16) + 'px';
   app.appendChild(el);
-  setTimeout(() => el.remove(), 870);
+  setTimeout(() => el.remove(), 950);
+
+  // Spark particles
+  const sparkCount = 5 + Math.floor(pct / 25); // 5-9 sparks
+  for (let i = 0; i < sparkCount; i++) {
+    const angle = (Math.PI * 2 / sparkCount) * i + Math.random() * 0.6;
+    const dist  = 28 + Math.random() * 22;
+    const s = document.createElement('div');
+    s.className = 'spark';
+    s.style.background = color;
+    s.style.boxShadow  = '0 0 4px ' + color;
+    s.style.left = (lx - 3) + 'px';
+    s.style.top  = (ly - 3) + 'px';
+    s.style.setProperty('--tx', (Math.cos(angle) * dist).toFixed(1) + 'px');
+    s.style.setProperty('--ty', (Math.sin(angle) * dist).toFixed(1) + 'px');
+    s.style.setProperty('--dur', (0.4 + Math.random() * 0.25) + 's');
+    app.appendChild(s);
+    setTimeout(() => s.remove(), 700);
+  }
+
+  // Ripple on coin
+  const coinWrap = document.getElementById('coin-wrap');
+  if (coinWrap) {
+    const ripple = document.createElement('div');
+    ripple.className = 'coin-ripple';
+    coinWrap.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 580);
+  }
 }
