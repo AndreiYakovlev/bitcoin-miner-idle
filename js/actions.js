@@ -89,7 +89,8 @@ function doClick(cx, cy) {
   renderHeader();
   renderStats();
   checkAchievements();
-  spawnFloat(cx, cy, '+' + fmt(power) + ' sat');
+  const boosted = G.boostActive && Date.now() < G.boostEndsAt;
+  spawnFloat(cx, cy, (boosted ? '⚡' : '') + '+' + fmt(power) + ' sat');
   save();
 }
 

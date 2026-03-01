@@ -127,11 +127,14 @@ function renderShop() {
 // ── Boost ─────────────────────────────────
 
 function renderBoost() {
-  const btn  = document.getElementById('boost-btn');
-  const info = document.getElementById('boost-info');
+  const btn      = document.getElementById('boost-btn');
+  const info     = document.getElementById('boost-info');
+  const coinWrap = document.getElementById('coin-wrap');
   if (!btn) return;
-  const now = Date.now();
-  if (G.boostActive && now < G.boostEndsAt) {
+  const now    = Date.now();
+  const active = G.boostActive && now < G.boostEndsAt;
+  if (coinWrap) coinWrap.classList.toggle('boost-active', active);
+  if (active) {
     const rem = Math.ceil((G.boostEndsAt - now) / 1000);
     btn.disabled = true;
     btn.classList.add('running');

@@ -98,9 +98,10 @@ function calcPrestigeGain() {
   return Math.floor(Math.sqrt(G.sps / 100));
 }
 
-/** Sat earned per click (integer). */
+/** Sat earned per click (integer). Includes active boost ×2. */
 function calcClickPow() {
-  return Math.max(1, Math.floor(G.clickMult));
+  const boost = G.boostActive && Date.now() < G.boostEndsAt ? 2 : 1;
+  return Math.max(1, Math.floor(G.clickMult * boost));
 }
 
 /** Auto-click sat/sec from managers (applies click power). */

@@ -7,18 +7,47 @@
 // ── Ticker ───────────────────────────────────
 
 (function initTicker() {
-  const el = document.getElementById('ticker-text');
+  const wrap = document.getElementById('ticker-wrap');
+  const icon = document.getElementById('ticker-icon');
+  const el   = document.getElementById('ticker-text');
   let idx = Math.floor(Math.random() * NEWS_TICKER.length);
+  let nextTimer;
+
   function showNext() {
-    el.classList.remove('ticker-visible');
+    el.classList.remove('ticker-visible', 'ticker-scroll');
+    el.style.removeProperty('--ticker-offset');
+    el.style.removeProperty('--ticker-dur');
+    el.style.removeProperty('--ticker-delay');
+
     setTimeout(() => {
       el.textContent = NEWS_TICKER[idx % NEWS_TICKER.length];
       idx++;
       el.classList.add('ticker-visible');
+
+      // measure after paint
+      requestAnimationFrame(() => {
+        const available = wrap.clientWidth - (icon ? icon.offsetWidth + 18 : 22);
+        const textW     = el.offsetWidth;
+        const overflow  = textW - available;
+
+        clearTimeout(nextTimer);
+        if (overflow > 8) {
+          const scrollPx = overflow + 32;          // scroll past the cut-off + small buffer
+          const dur      = scrollPx / 75;          // 75 px/s — comfortable reading speed
+          const delay    = 1.0;                    // pause before moving
+          el.style.setProperty('--ticker-offset', `-${scrollPx}px`);
+          el.style.setProperty('--ticker-dur',    `${dur.toFixed(1)}s`);
+          el.style.setProperty('--ticker-delay',  `${delay}s`);
+          el.classList.add('ticker-scroll');
+          nextTimer = setTimeout(showNext, (delay + dur + 1.5) * 1000);
+        } else {
+          nextTimer = setTimeout(showNext, 9000);
+        }
+      });
     }, 350);
   }
+
   showNext();
-  setInterval(showNext, 9000);
 })();
 
 // ── Theme toggle ───────────────────────────

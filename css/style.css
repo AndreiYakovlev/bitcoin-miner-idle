@@ -179,7 +179,7 @@ html, body {
 
 /* ── Ticker ─────────────────────────────── */
 #ticker-wrap {
-  position: absolute; top: 64px; left: 0; right: 0; height: 26px;
+  position: absolute; top: 64px; left: 0; right: 0; height: 28px;
   background: var(--bg3);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 6px;
@@ -187,13 +187,21 @@ html, body {
   overflow: hidden;
   z-index: 90;
 }
-#ticker-icon { font-size: 0.7rem; flex-shrink: 0; }
+#ticker-icon { font-size: 0.8rem; flex-shrink: 0; }
 #ticker-text {
-  font-size: 0.65rem; color: var(--text2);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 0.75rem; color: var(--text2);
+  white-space: nowrap;
+  flex-shrink: 0;          /* natural content width */
   opacity: 0; transition: opacity 0.35s;
 }
 #ticker-text.ticker-visible { opacity: 1; }
+#ticker-text.ticker-scroll {
+  animation: tickerScroll var(--ticker-dur, 8s) linear var(--ticker-delay, 1s) 1 forwards;
+}
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(var(--ticker-offset, -200px)); }
+}
 
 /* ─── CONTENT ─────────────────────────────── */
 #content {
@@ -277,6 +285,50 @@ html, body {
 
 .click-info { text-align: center; font-size: 0.85rem; color: var(--text2); }
 .click-info strong { color: var(--accent); }
+
+/* ── Boost active coin effect ────────────── */
+#coin-wrap.boost-active::before {
+  content: '';
+  position: absolute;
+  width: 214px; height: 214px;
+  top: -12px; left: -12px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ffd700 0deg,   transparent  40deg,
+    #ff8c00 90deg,  transparent 130deg,
+    #ffd700 180deg, transparent 220deg,
+    #ff8c00 270deg, transparent 310deg,
+    #ffd700 360deg
+  );
+  animation: boostRingRotate 0.65s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+#coin-wrap.boost-active::after {
+  content: '';
+  position: absolute;
+  width: 250px; height: 250px;
+  top: -30px; left: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,0.22) 0%, rgba(255,140,0,0.10) 50%, transparent 70%);
+  animation: boostHalo 0.55s ease-in-out infinite alternate;
+  z-index: -1;
+  pointer-events: none;
+}
+#coin-wrap.boost-active #coin {
+  animation: coinPulseBoost 0.55s ease-in-out infinite !important;
+}
+@keyframes boostRingRotate {
+  to { transform: rotate(360deg); }
+}
+@keyframes boostHalo {
+  from { opacity: 0.5; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.15); }
+}
+@keyframes coinPulseBoost {
+  0%,100% { box-shadow: 0 0 0 5px  rgba(255,215,0,0.50), 0 0 55px  rgba(255,200,0,0.70), 0 0 110px rgba(255,140,0,0.35); }
+  50%     { box-shadow: 0 0 0 12px rgba(255,215,0,0.80), 0 0 90px  rgba(255,200,0,0.95), 0 0 170px rgba(255,140,0,0.55); }
+}
 
 /* ─── FRENZY COMBO ────────────────────────── */
 #frenzy-wrap {
