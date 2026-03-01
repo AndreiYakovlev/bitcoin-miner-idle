@@ -1,0 +1,214 @@
+/* ═══════════════════════════════════════════
+   mine.css — mine panel, coin, click effects, frenzy, stats
+   ═══════════════════════════════════════════ */
+
+/* ─── MINE PANEL ──────────────────────────── */
+#mine-panel {
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100%;
+  padding: 16px 20px 20px;
+  gap: 0;
+}
+
+#coin-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+#mine-bottom {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+#mine-bottom #boost-status { max-width: 100%; }
+
+/* ─── COIN ────────────────────────────────── */
+#coin-wrap { position: relative; }
+
+#coin {
+  width: 190px; height: 190px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #ffe57a 0%, #f7931a 45%, #b35500 100%);
+  box-shadow:
+    0 0 0 4px rgba(247,147,26,0.25),
+    0 0 40px rgba(247,147,26,0.45),
+    0 0 90px rgba(247,147,26,0.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5.5rem; font-weight: 900;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  animation: coinPulse 2.5s ease-in-out infinite;
+  transition: transform 0.06s, box-shadow 0.06s;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+#coin::after {
+  content: '';
+  position: absolute; top: -60%; left: -60%;
+  width: 220%; height: 220%;
+  background: linear-gradient(130deg, transparent 42%, rgba(255,255,255,0.22) 50%, transparent 58%);
+  animation: coinShine 2.8s linear infinite;
+}
+#coin.clicked      { transform: scale(0.92) !important; }
+#coin.auto-clicked { animation: autoClickPulse 0.18s ease-out forwards !important; }
+
+@keyframes autoClickPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+@keyframes coinPulse {
+  0%,100% { box-shadow: 0 0 0 4px rgba(247,147,26,0.2),  0 0 40px rgba(247,147,26,0.4),  0 0 90px  rgba(247,147,26,0.15); }
+  50%     { box-shadow: 0 0 0 8px rgba(247,147,26,0.3),  0 0 60px rgba(247,147,26,0.65), 0 0 130px rgba(247,147,26,0.28); }
+}
+@keyframes coinShine {
+  0%   { transform: translate(-100%,-100%); }
+  100% { transform: translate(100%, 100%); }
+}
+
+.click-info { text-align: center; font-size: 0.85rem; color: var(--text2); }
+.click-info strong { color: var(--accent); }
+
+/* ── Boost active coin effect ────────────── */
+#coin-wrap.boost-active::before {
+  content: '';
+  position: absolute;
+  width: 214px; height: 214px;
+  top: -12px; left: -12px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ffd700 0deg,   transparent  40deg,
+    #ff8c00 90deg,  transparent 130deg,
+    #ffd700 180deg, transparent 220deg,
+    #ff8c00 270deg, transparent 310deg,
+    #ffd700 360deg
+  );
+  animation: boostRingRotate 0.65s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+#coin-wrap.boost-active::after {
+  content: '';
+  position: absolute;
+  width: 250px; height: 250px;
+  top: -30px; left: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,0.22) 0%, rgba(255,140,0,0.10) 50%, transparent 70%);
+  animation: boostHalo 0.55s ease-in-out infinite alternate;
+  z-index: -1;
+  pointer-events: none;
+}
+#coin-wrap.boost-active #coin {
+  animation: coinPulseBoost 0.55s ease-in-out infinite !important;
+}
+@keyframes boostRingRotate { to { transform: rotate(360deg); } }
+@keyframes boostHalo {
+  from { opacity: 0.5; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.15); }
+}
+@keyframes coinPulseBoost {
+  0%,100% { box-shadow: 0 0 0 5px  rgba(255,215,0,0.50), 0 0 55px  rgba(255,200,0,0.70), 0 0 110px rgba(255,140,0,0.35); }
+  50%     { box-shadow: 0 0 0 12px rgba(255,215,0,0.80), 0 0 90px  rgba(255,200,0,0.95), 0 0 170px rgba(255,140,0,0.55); }
+}
+
+/* ─── FRENZY COMBO ────────────────────────── */
+#frenzy-wrap {
+  text-align: center;
+  min-height: 24px;
+  margin-bottom: 2px;
+}
+#frenzy-chip {
+  display: none;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(247,147,26,.18);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-shadow: 0 0 8px rgba(247,147,26,.6);
+  box-shadow: 0 0 10px rgba(247,147,26,.2);
+}
+
+/* ─── STATS CARDS ─────────────────────────── */
+.stats-row { display: flex; gap: 10px; width: 100%; max-width: 360px; }
+.stat-card {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 8px; text-align: center;
+}
+.stat-label { font-size: 0.58rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; }
+.stat-value { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-top: 3px; }
+
+/* ─── FLOAT TEXT ──────────────────────────── */
+.float-text {
+  position: absolute;
+  font-size: 1.05rem; font-weight: 900;
+  color: var(--green);
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+  text-shadow: 0 0 8px currentColor;
+  transform-origin: center bottom;
+  animation: floatUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.float-text.auto-float {
+  font-size: 0.72rem; font-weight: 600;
+  color: var(--text2);
+  text-shadow: none;
+  opacity: 0.7;
+  animation: floatUpSoft 0.9s ease-out forwards;
+}
+@keyframes floatUpSoft {
+  0%   { opacity: 0.7; transform: translateY(0); }
+  100% { opacity: 0;   transform: translateY(-44px); }
+}
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0)    scale(0.5); }
+  18%  { opacity: 1; transform: translateY(-8px)  scale(1.25); }
+  100% { opacity: 0; transform: translateY(-72px) scale(0.85); }
+}
+
+/* ─── SPARK PARTICLES ─────────────────────── */
+.spark {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 998;
+  animation: sparkFly var(--dur, 0.55s) ease-out forwards;
+}
+@keyframes sparkFly {
+  0%   { opacity: 1; transform: translate(0,0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+}
+
+/* ─── RIPPLE RING ─────────────────────────── */
+.coin-ripple {
+  position: absolute;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(247,147,26,0.7);
+  top: 0; left: 0;
+  pointer-events: none;
+  animation: rippleOut 0.55s ease-out forwards;
+}
+@keyframes rippleOut {
+  0%   { transform: scale(1);    opacity: 0.8; }
+  100% { transform: scale(1.55); opacity: 0; }
+}

@@ -1,0 +1,135 @@
+/* ═══════════════════════════════════════════
+   drops.css — falling coins, boost, gems, collect burst
+   ═══════════════════════════════════════════ */
+
+/* Shared fall animation */
+@keyframes dropFall {
+  0%   { top: -64px; opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: 108%;  opacity: 0; }
+}
+@keyframes dropBob {
+  from { margin-left: -8px; }
+  to   { margin-left:  8px; }
+}
+
+/* ─── FALLING COINS ────────────────────── */
+.drop-coin {
+  position: absolute;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  cursor: pointer;
+  z-index: 300; pointer-events: auto;
+  transform-origin: center top;
+  animation: dropFall var(--fall-dur, 5s) linear forwards;
+  user-select: none; -webkit-user-select: none;
+}
+.drop-coin-icon {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #ffe57a 0%, #f7931a 50%, #b35500 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  box-shadow:
+    0 0 0 2px rgba(247,147,26,0.4),
+    0 0 16px rgba(247,147,26,0.7),
+    0 0 32px rgba(247,147,26,0.3);
+  animation: dropSpin 1.2s linear infinite, dropBob 0.9s ease-in-out infinite alternate;
+  transition: transform 0.08s;
+}
+.drop-coin:active .drop-coin-icon { transform: scale(0.88); }
+.drop-coin-val {
+  font-size: 0.65rem; font-weight: 800;
+  color: #fff;
+  background: rgba(0,0,0,0.55);
+  border-radius: 8px; padding: 1px 6px;
+  white-space: nowrap; letter-spacing: 0.03em;
+}
+@keyframes dropSpin {
+  from { transform: rotateY(0deg); }
+  to   { transform: rotateY(360deg); }
+}
+
+/* ─── FALLING BOOST ────────────────────── */
+.drop-boost {
+  position: absolute;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  cursor: pointer;
+  z-index: 300; pointer-events: auto;
+  transform-origin: center top;
+  animation: dropFall var(--fall-dur, 6s) linear forwards;
+  user-select: none; -webkit-user-select: none;
+}
+.drop-boost-icon {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #fff87a 0%, #ffe119 50%, #ff9f00 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  box-shadow:
+    0 0 0 2px rgba(255,225,25,0.5),
+    0 0 20px rgba(255,225,25,0.85),
+    0 0 40px rgba(255,150,0,0.45);
+  animation: dropBob 0.75s ease-in-out infinite alternate;
+  transition: transform 0.08s;
+}
+.drop-boost:active .drop-boost-icon { transform: scale(0.86); }
+.drop-boost-val {
+  font-size: 0.65rem; font-weight: 800;
+  color: #fff;
+  background: rgba(0,0,0,0.60);
+  border-radius: 8px; padding: 1px 6px;
+  white-space: nowrap; letter-spacing: 0.03em;
+}
+
+/* ─── FALLING GEM ────────────────────────── */
+.drop-gem {
+  position: absolute;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  cursor: pointer;
+  z-index: 300; pointer-events: auto;
+  transform-origin: center top;
+  animation: dropFall var(--fall-dur, 7s) linear forwards;
+  user-select: none; -webkit-user-select: none;
+}
+.drop-gem-icon {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #e8d8ff 0%, #8844ff 50%, #440099 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  box-shadow:
+    0 0 0 2px rgba(160,100,255,0.55),
+    0 0 20px rgba(140,80,255,0.90),
+    0 0 44px rgba(100,50,220,0.50);
+  animation: dropBob 1.1s ease-in-out infinite alternate;
+  transition: transform 0.08s;
+}
+.drop-gem:active .drop-gem-icon { transform: scale(0.86); }
+.drop-gem-val {
+  font-size: 0.65rem; font-weight: 800;
+  color: #fff;
+  background: rgba(40,0,100,0.72);
+  border-radius: 8px; padding: 1px 6px;
+  white-space: nowrap; letter-spacing: 0.03em;
+}
+
+/* ─── COLLECT BURST ───────────────────────── */
+.drop-collect-burst {
+  position: absolute;
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  pointer-events: none;
+  z-index: 301;
+  transform: translate(-50%, -50%);
+  animation: collectBurst 0.45s ease-out forwards;
+}
+@keyframes collectBurst {
+  0%   { transform: translate(-50%,-50%) scale(0.4); opacity: 1; }
+  100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
+}
+.gem-burst { border-color: #a060ff; }

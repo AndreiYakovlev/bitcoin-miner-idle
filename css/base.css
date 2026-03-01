@@ -1,0 +1,175 @@
+/* ═══════════════════════════════════════════
+   base.css — variables, reset, app shell, overlays
+   ═══════════════════════════════════════════ */
+
+:root {
+  --bg:      #080810;
+  --bg2:     #0f0f1a;
+  --bg3:     #161625;
+  --bg4:     #1e1e32;
+  --bg5:     #26263e;
+  --accent:  #f7931a;
+  --accent2: #ffc15e;
+  --green:   #00e87a;
+  --blue:    #4fc3ff;
+  --red:     #ff4f4f;
+  --text:    #eeeef8;
+  --text2:   #8888aa;
+  --border:  #252540;
+  --border2: #333358;
+  --radius:  14px;
+}
+
+/* ─ Light theme ────────────────────────────── */
+#app[data-theme="light"] {
+  --bg:      #f4f4ee;
+  --bg2:     #eaeae2;
+  --bg3:     #e0e0d8;
+  --bg4:     #d6d6ce;
+  --bg5:     #cbcbc2;
+  --accent:  #e07000;
+  --accent2: #b85800;
+  --green:   #009950;
+  --blue:    #1880b0;
+  --red:     #cc2222;
+  --text:    #1a1a24;
+  --text2:   #55556a;
+  --border:  #c8c8be;
+  --border2: #b8b8ae;
+}
+
+#app[data-theme="light"]::before {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+}
+#app[data-theme="light"]::after {
+  background:
+    radial-gradient(ellipse 40% 35% at 60% 60%, rgba(224,112,0,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 30% 35%, rgba(24,128,176,0.06) 0%, transparent 60%);
+}
+#app[data-theme="light"] #vignette {
+  background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.12) 100%);
+}
+
+/* ─ Reset ──────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+html, body {
+  height: 100%; width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ─── APP WRAPPER ────────────────────────── */
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+#app.boost-active {
+  background: #0b0905;
+  box-shadow:
+    inset 0 0 80px  rgba(255,190,0,0.13),
+    inset 0 0 200px rgba(255,100,0,0.07);
+}
+
+/* ── Boost background overlay ─────────────── */
+#boost-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#app.boost-active #boost-bg {
+  opacity: 1;
+  background:
+    radial-gradient(ellipse 110% 90% at 50% 50%, rgba(255,210,0,0.13)  0%, transparent 65%),
+    radial-gradient(ellipse  70% 60% at 15% 10%, rgba(255,80,0,0.09)   0%, transparent 55%),
+    radial-gradient(ellipse  70% 60% at 85% 90%, rgba(255,150,0,0.09)  0%, transparent 55%),
+    radial-gradient(ellipse  50% 40% at 90% 15%, rgba(180,80,255,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse  50% 40% at 10% 85%, rgba(0,180,255,0.06)  0%, transparent 50%);
+  animation: boostBgBreath 1.1s ease-in-out infinite alternate;
+}
+@keyframes boostBgBreath {
+  from { transform: scale(1);    filter: brightness(1);    }
+  to   { transform: scale(1.08); filter: brightness(1.40); }
+}
+
+/* Dot-grid overlay */
+#app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 80%);
+}
+
+/* Animated ambient glow */
+#app::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 40% 35% at 60% 60%, rgba(247,147,26,0.10) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 30% at 30% 35%, rgba(79,195,255,0.07) 0%, transparent 60%);
+  animation: ambientDrift 14s ease-in-out infinite alternate;
+}
+@keyframes ambientDrift {
+  0%   { transform: translate(0%,   0%)   scale(1); }
+  33%  { transform: translate(8%,  -6%)   scale(1.05); }
+  66%  { transform: translate(-5%,  8%)   scale(0.97); }
+  100% { transform: translate(4%,   3%)   scale(1.03); }
+}
+
+/* Vignette */
+#vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.52) 100%);
+}
+
+/* ─── DESKTOP ────────────────────────────── */
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(247,147,26,0.09) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 50%, rgba(79,195,255,0.06) 0%, transparent 50%),
+      #040408;
+  }
+
+  #app {
+    position: relative;
+    width: 420px;
+    height: min(860px, 96dvh);
+    border-radius: 6px;
+    box-shadow:
+      0 0 0 1px rgba(247,147,26,0.25),
+      0 0 40px  rgba(247,147,26,0.18),
+      0 0 90px  rgba(247,147,26,0.10),
+      0 0 160px rgba(247,147,26,0.06);
+  }
+}

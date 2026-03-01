@@ -1,0 +1,119 @@
+/* ═══════════════════════════════════════════
+   shop.css — item cards, shop UI, boost status
+   ═══════════════════════════════════════════ */
+
+/* ─── LIST PANELS ─────────────────────────── */
+.list-panel {
+  padding: 10px 12px 20px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.section-title {
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--text2); padding: 10px 4px 2px;
+}
+
+/* ─── ITEM CARD ───────────────────────────── */
+.item-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  display: flex; align-items: center; gap: 11px;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+  position: relative; overflow: hidden;
+  -webkit-user-select: none;
+}
+.item-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: transparent;
+  transition: background 0.18s;
+  pointer-events: none;
+}
+.item-card.affordable { border-color: rgba(247,147,26,0.55); }
+.item-card.affordable::before {
+  background: linear-gradient(120deg, rgba(247,147,26,0.07), transparent 60%);
+}
+.item-card:active    { background: var(--bg4); }
+.item-card.bought    { border-color: rgba(0,232,122,0.45); opacity: 0.62; pointer-events: none; }
+.item-card.locked    { opacity: 0.35; }
+
+.item-emoji { font-size: 2rem; min-width: 42px; text-align: center; }
+
+.item-info  { flex: 1; min-width: 0; }
+.item-name  { font-size: 0.93rem; font-weight: 700; }
+.item-desc  { font-size: 0.68rem; color: var(--text2); margin-top: 2px; }
+.item-sps   { font-size: 0.68rem; color: var(--green); margin-top: 3px; }
+.item-sps-total { font-size: 0.68rem; color: var(--accent2); font-weight: 700; margin-top: 1px; }
+
+.item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.item-price { font-size: 0.82rem; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.item-price.done { color: var(--green); font-size: 1.1rem; }
+.item-count {
+  background: var(--bg5); border-radius: 8px;
+  padding: 2px 9px;
+  font-size: 0.8rem; font-weight: 700; color: var(--text);
+  min-width: 30px; text-align: center;
+}
+
+.upgrade-tag {
+  display: inline-block; margin-top: 3px;
+  font-size: 0.62rem; font-weight: 700;
+  padding: 2px 7px; border-radius: 6px;
+  background: rgba(247,147,26,0.18); color: var(--accent2);
+}
+.upgrade-tag.type-all {
+  background: rgba(79,195,255,0.15); color: var(--blue);
+}
+
+/* ─── MANAGER CARDS ───────────────────────── */
+.manager-title { color: var(--blue); border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px; }
+.manager-card .item-emoji { filter: none; }
+.manager-card.affordable { border-color: rgba(79,195,255,0.4); }
+.manager-card.affordable .item-price { color: var(--blue); }
+
+/* ─── SHOP HEADER + BUY MODE FAB ──────────── */
+#shop-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 4px;
+}
+#shop-header .section-title { margin: 0; padding: 0; }
+#buy-mode-fab {
+  min-width: 58px; padding: 6px 12px;
+  background: var(--accent);
+  color: #000;
+  border: none; border-radius: 20px;
+  font-size: 0.85rem; font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 10px rgba(247,147,26,0.35);
+}
+#buy-mode-fab[data-mode="10"]  { background: var(--accent2); }
+#buy-mode-fab[data-mode="100"] { background: var(--green); box-shadow: 0 2px 10px rgba(0,232,122,0.35); }
+#buy-mode-fab[data-mode="0"]   { background: var(--blue);  box-shadow: 0 2px 10px rgba(79,195,255,0.35); }
+#buy-mode-fab:active { transform: scale(0.93); }
+
+.item-buy-qty {
+  font-size: 0.6rem; color: var(--accent2);
+  text-align: right; margin-top: 1px;
+}
+
+/* ─── BOOST STATUS ──────────────────────── */
+#boost-status {
+  visibility: hidden;
+  width: 100%; max-width: 360px;
+  font-size: 0.78rem; font-weight: 800;
+  color: var(--accent);
+  text-align: center;
+  padding: 6px 14px;
+  background: rgba(247,147,26,0.12);
+  border: 1px solid rgba(247,147,26,0.35);
+  border-radius: 20px;
+  animation: boost-pulse 1s ease-in-out infinite;
+}
+@keyframes boost-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(247,147,26,0); }
+  50%      { box-shadow: 0 0 12px 2px rgba(247,147,26,0.3); }
+}
