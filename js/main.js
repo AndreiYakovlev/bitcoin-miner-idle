@@ -50,42 +50,6 @@
   showNext();
 })();
 
-// ── Live BTC price ────────────────────────
-
-(function initBtcPrice() {
-  const el = document.getElementById('btc-price');
-  if (!el) return;
-
-  let prevPrice = null;
-
-  function fmtUsd(n) {
-    return '📈 $' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  async function fetchPrice() {
-    try {
-      const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',
-        { cache: 'no-store' });
-      const data = await res.json();
-      const price = parseFloat(data.price);
-
-      let arrow = '';
-      if (prevPrice !== null && price !== prevPrice) {
-        arrow = price > prevPrice
-          ? '<span class="price-up">▲</span>'
-          : '<span class="price-down">▼</span>';
-      }
-      prevPrice = price;
-      el.innerHTML = fmtUsd(price) + (arrow ? '\u00a0' + arrow : '');
-    } catch {
-      /* network unavailable — keep last value */
-    }
-  }
-
-  fetchPrice();
-  setInterval(fetchPrice, 10_000);
-})();
-
 // ── Theme toggle ───────────────────────────
 
 (function initTheme() {
@@ -515,12 +479,6 @@ setInterval(() => {
 
   checkAchievements();
 }, 200);
-
-// ── Playtime clock (1 s tick) ─────────────
-
-setInterval(() => {
-  document.getElementById('header-time').textContent = fmtTime(G.playtime);
-}, 1000);
 
 // ── Autosave (15 s) ───────────────────────
 
