@@ -163,6 +163,9 @@ html, body {
   line-height: 1.2;
 }
 #sps-display   { font-size: 0.7rem; color: var(--text2); margin-top: 1px; }
+#btc-price     { font-size: 0.62rem; color: var(--text2); margin-top: 1px; letter-spacing: 0.02em; }
+.price-up      { color: #28c76f; font-size: 0.55rem; vertical-align: middle; }
+.price-down    { color: #ea5455; font-size: 0.55rem; vertical-align: middle; }
 #header-right  { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 #header-time   { font-size: 0.65rem; color: var(--text2); white-space: nowrap; }
 #header-actions { display: flex; align-items: center; gap: 14px; }
