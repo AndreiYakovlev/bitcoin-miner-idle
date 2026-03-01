@@ -197,6 +197,27 @@ html, body {
 .click-info { text-align: center; font-size: 0.85rem; color: var(--text2); }
 .click-info strong { color: var(--accent); }
 
+/* ─── FRENZY COMBO ────────────────────────── */
+#frenzy-wrap {
+  text-align: center;
+  min-height: 24px;
+  margin-bottom: 2px;
+}
+
+#frenzy-chip {
+  display: none;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(247,147,26,.18);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-shadow: 0 0 8px rgba(247,147,26,.6);
+  box-shadow: 0 0 10px rgba(247,147,26,.2);
+}
+
 /* Stats cards */
 .stats-row { display: flex; gap: 10px; width: 100%; max-width: 360px; }
 .stat-card {

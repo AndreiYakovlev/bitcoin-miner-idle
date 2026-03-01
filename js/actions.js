@@ -4,6 +4,24 @@
    ═══════════════════════════════════════════ */
 'use strict';
 
+// ── Frenzy config ─────────────────────────
+const FRENZY_THRESHOLD  = 500;  // ms between clicks to keep frenzy growing
+const FRENZY_RATE_UP    = 1;   // points gained per second while clicking fast
+const FRENZY_RATE_DOWN  = 25;   // points lost per second when idle
+
+let _frenzyLastClick = 0;
+
+/** Called each game-loop tick to evolve the frenzy multiplier. */
+function updateFrenzy(dt) {
+  const now = Date.now();
+  if (_frenzyLastClick > 0 && (now - _frenzyLastClick) < FRENZY_THRESHOLD) {
+    G.clickFrenzy = Math.min(100, G.clickFrenzy + FRENZY_RATE_UP * dt);
+  } else {
+    G.clickFrenzy = Math.max(0, G.clickFrenzy - FRENZY_RATE_DOWN * dt);
+  }
+  renderFrenzy();
+}
+
 // ── Buy a miner ───────────────────────────
 
 function buyMiner(m) {
@@ -61,7 +79,9 @@ function buyUpgrade(u) {
 // ── Coin click ────────────────────────────
 
 function doClick(cx, cy) {
-  const power = calcClickPow();
+  _frenzyLastClick  = Date.now();
+  const base  = calcClickPow();
+  const power = Math.round(base * (1 + G.clickFrenzy / 100));
   G.sat    += power;
   G.total  += power;
   G.clicks++;

@@ -25,6 +25,8 @@ const G = {
   prestigeRuns:   0,   // number of times prestiged
   // ─ Buy mode (session only) ────────────────
   buyMode:        1,   // 1 | 10 | 100 | 0 (= max)
+  // ─ Frenzy (session only) ──────────────────
+  clickFrenzy:    0,   // 0-100, bonus % to click power
   // ─ Boosts ────────────────────────────────
   boostCharges:   3,   // current charges (max 3)
   boostActive:    false,

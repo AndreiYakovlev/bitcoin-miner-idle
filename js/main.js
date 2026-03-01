@@ -201,6 +201,7 @@ setInterval(() => {
   renderHeader();
   renderStats();
   renderBoost();
+  updateFrenzy(dt);
 
   // Boost tick
   if (G.boostActive && Date.now() >= G.boostEndsAt) G.boostActive = false;

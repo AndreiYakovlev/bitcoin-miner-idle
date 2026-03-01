@@ -297,6 +297,20 @@ function renderStatPanel() {
   `).join('');
 }
 
+// ── Frenzy multiplier display ───────────────────
+
+function renderFrenzy() {
+  const pct  = Math.round(G.clickFrenzy);
+  const chip = document.getElementById('frenzy-chip');
+  if (!chip) return;
+  if (pct > 0) {
+    chip.textContent = '🔥 +' + pct + '%';
+    chip.style.display = 'inline-block';
+  } else {
+    chip.style.display = 'none';
+  }
+}
+
 // ── Float text (click sparks) ─────────────────
 
 function spawnFloat(cx, cy, text) {
