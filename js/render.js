@@ -300,13 +300,9 @@ function renderUpgrades() {
   list.innerHTML = '';
 
   const clickUpgrades = UPGRADES.filter(u => u.type === 'click');
-  const allUpgrades = UPGRADES.filter(u => u.type === 'all');
 
   _appendSectionTitle(list, '⛏️ Улучшения кликера');
   clickUpgrades.forEach(u => list.appendChild(_makeUpgradeCard(u)));
-
-  _appendSectionTitle(list, '⚙️ Улучшения добычи');
-  allUpgrades.forEach(u => list.appendChild(_makeUpgradeCard(u)));
 
   // Update badge
   const avail = UPGRADES.filter(u => !G.upgrades[u.id] && G.sat >= u.price).length;

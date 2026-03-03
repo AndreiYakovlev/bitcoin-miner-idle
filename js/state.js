@@ -82,7 +82,7 @@ function calcMaxBuy(m) {
 /** Activate boost (×2 for 30/60 s). */
 function activateBoost() {
   G.boostActive = true;
-  G.boostEndsAt = Date.now() + calcBoostDuration();
+  G.boostEndsAt = Date.now() + calcBoostDuration() * 1000;
 }
 
 /** Bonus multiplier from prestige points: +2% per point. */
@@ -105,9 +105,9 @@ function calcOfflineMax() {
   return 7200; // default 2h
 }
 
-/** Boost duration ms based on boost_gem. */
+/** Boost duration seconds based on boost_gem. */
 function calcBoostDuration() {
-  return G.gemUpgrades['boost_gem'] ? 60000 : 30000;
+  return G.gemUpgrades['boost_gem'] ? 45 : 30;
 }
 
 /** Sat earned per click (integer). Includes active boost ×2. */
@@ -147,7 +147,8 @@ function calcManagerMaxBuy(m) {
 
 /** Recalculate clickMult and allMult from purchased upgrades + gem upgrades. */
 function recalcMults() {
-  let cm = 1, am = 1;
+  let cm = 1; // click multiplier 
+  let am = 1; // all-miners multiplier
   for (const u of UPGRADES) {
     if (G.upgrades[u.id]) {
       if (u.type === 'click') cm *= u.mult;

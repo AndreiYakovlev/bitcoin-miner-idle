@@ -15,7 +15,7 @@ let _frenzyLastClick = 0;
 function updateFrenzy(dt) {
   const now = Date.now();
   if (_frenzyLastClick > 0 && (now - _frenzyLastClick) < FRENZY_THRESHOLD) {
-    G.clickFrenzy = Math.min(100, G.clickFrenzy + FRENZY_RATE_UP * dt);
+    G.clickFrenzy = Math.min(100, G.clickFrenzy + (FRENZY_RATE_UP * (G.boostActive ? 3 : 1)) * dt);
   } else {
     G.clickFrenzy = Math.max(0, G.clickFrenzy - FRENZY_RATE_DOWN * dt);
   }

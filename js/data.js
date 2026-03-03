@@ -3,30 +3,38 @@
    ═══════════════════════════════════════════ */
 'use strict';
 
-const MINERS = [
-  { id: 'gtx1060', name: 'GTX 1060', emoji: '💻', basePrice: 50, baseSps: 0.1, desc: 'Старенькая видеокарта' },
-  { id: 'rtx2060', name: 'RTX 2060', emoji: '🖱️', basePrice: 280, baseSps: 0.6, desc: 'Бюджетный вариант' },
-  { id: 'rtx3060', name: 'RTX 3060', emoji: '🖥️', basePrice: 1500, baseSps: 4, desc: 'Современная карта' },
-  { id: 'rtx4070', name: 'RTX 4070', emoji: '🎮', basePrice: 8000, baseSps: 22, desc: 'Мощная карта' },
-  { id: 'rtx4090', name: 'RTX 4090', emoji: '⚡', basePrice: 40000, baseSps: 130, desc: 'Топовая карта 2024' },
-  { id: 'rx7900', name: 'RX 7900 XTX', emoji: '🔴', basePrice: 200000, baseSps: 750, desc: 'AMD флагман' },
-  { id: 'rig4', name: 'Rig 4× GPU', emoji: '🔧', basePrice: 1000000, baseSps: 4500, desc: '4 карты в стойке' },
-  { id: 'rig8', name: 'Rig 8× GPU', emoji: '🔩', basePrice: 6000000, baseSps: 30000, desc: '8 карт, серьёзная сборка' },
-  { id: 'rig16', name: 'Mega Rig 16×', emoji: '🏗️', basePrice: 35000000, baseSps: 200000, desc: '16 карт — настоящая ферма' },
-  { id: 'asic_s9', name: 'Antminer S9', emoji: '📦', basePrice: 200000000, baseSps: 1300000, desc: 'Первое поколение ASIC' },
-  { id: 'asic_s17', name: 'Antminer S17', emoji: '📫', basePrice: 1200000000, baseSps: 9000000, desc: 'Мощный ASIC 2019' },
-  { id: 'asic_s19', name: 'Antminer S19 Pro', emoji: '🚗', basePrice: 7000000000, baseSps: 60000000, desc: 'Профессиональный ASIC' },
-  { id: 'asic_s21', name: 'Antminer S21 XP', emoji: '🚀', basePrice: 4e10, baseSps: 420000000, desc: 'Новейший ASIC 2025' },
-  { id: 'asic_next', name: 'Whatsminer M66S', emoji: '💎', basePrice: 2.5e11, baseSps: 3e9, desc: 'Следующее поколение' },
-  { id: 'microfarm', name: 'Мини-ферма', emoji: '🏚️', basePrice: 1.5e12, baseSps: 2.2e10, desc: '10 ASIC в гараже' },
-  { id: 'container', name: 'Контейнер', emoji: '🚢', basePrice: 1e13, baseSps: 1.6e11, desc: 'Промышленный контейнер' },
-  { id: 'datacenter', name: 'Дата-центр', emoji: '🏢', basePrice: 7e13, baseSps: 1.2e12, desc: 'Серверный зал' },
-  { id: 'hydro', name: 'Гидро-ферма', emoji: '💧', basePrice: 5e14, baseSps: 9e12, desc: 'Ферма у гидростанции' },
-  { id: 'solar', name: 'Солнечная ферма', emoji: '☀️', basePrice: 4e15, baseSps: 7.5e13, desc: 'Солнечные панели' },
-  { id: 'nuclear', name: 'АЭС-Ферма', emoji: '☢️', basePrice: 3e16, baseSps: 6e14, desc: 'Атомная электростанция' },
-  { id: 'quantum', name: 'Квантовый майнер', emoji: '🔮', basePrice: 2.5e17, baseSps: 5e15, desc: 'Квантовые вычисления' },
-  { id: 'dyson', name: 'Сфера Дайсона', emoji: '🌟', basePrice: 2e18, baseSps: 4.5e16, desc: 'Мощность целой звезды' },
-];
+/**
+ * @param {string} id
+ * @param {string} name
+ * @param {string} emoji
+ * @param {number} price
+ * @param {number} sps
+ * @param {string} desc
+ */
+// prettier-ignore
+const MINERS = (() => {
+  const m = (id, name, emoji, price, sps, desc) => ({
+    id, name, emoji, desc,
+    basePrice: price,
+    baseSps: sps,
+  });
+  return [
+    m('calculator', 'Калькулятор', '🧮', 18, 0.1, 'Считает биткоины со скоростью мысли'),
+    m('smartphone', 'Смартфон', '📱', 130, 1, 'Батарея 3%, майнинг 100%'),
+    m('tablet', 'Планшет', '📟', 1400, 6, 'Мама не разрешает, но он майнит'),
+    m('laptop', 'Игровой ноутбук', '💻', 15000, 35, 'Работает от розетки 24/7'),
+    m('pc', 'Игровой ПК', '🖥️', 170_000, 190, 'RGB есть — значит быстрее'),
+    m('rig', 'Mega Rig 16x', '🏗️', 1_900_000, 1000, '16 карт — настоящая ферма'),
+    m('asic', 'Antminer', '📦', 26_000_000, 5200, 'Первое поколение ASIC'),
+    m('garage', 'Мини-ферма', '🏚️', 150_000_000, 26000, '10 ASIC в гараже'),
+    m('container', 'Контейнер', '🚢', 3.4e9, 125_000, 'Промышленный контейнер'),
+    m('datacenter', 'Дата-центр', '🏢', 4.6e10, 560_000, 'Серверный зал'),
+    m('hydro', 'Гидро-ферма', '💧', 4e11, 2_400_000, 'Ферма у гидростанции'),
+    m('orbit', 'Орбитальная ферма', '🪐', 2e12, 10_300_000, 'Ферма на орбите'),
+    m('quantum', 'Кванто-ферма', '🔮', 6e13, 41_900_000, 'Квантовые вычисления'),
+    m('dyson', 'Сфера Дайсона', '🌟', 1e15, 164_000_000, 'Мощность целой звезды'),
+  ];
+})();
 
 const UPGRADES = [
   // ── Click upgrades ────────────────────────
@@ -37,15 +45,6 @@ const UPGRADES = [
   { id: 'asicclk', name: 'ASIC-кликер', desc: 'Спец. чип для клика', price: 6000000, mult: 8, type: 'click', icon: '⚙️' },
   { id: 'qclk', name: 'Квантовый клик', desc: 'Квантовое ускорение', price: 1.5e8, mult: 15, type: 'click', icon: '🔮' },
   { id: 'ultra', name: 'Ultra Click', desc: 'Предел возможностей', price: 5e9, mult: 25, type: 'click', icon: '💥' },
-  // ── All-miners upgrades ───────────────────
-  { id: 'cool1', name: 'Лучшее охлаждение', desc: '×1.5 ко всей добыче', price: 2000, mult: 1.5, type: 'all', icon: '❄️' },
-  { id: 'pow1', name: 'Дешёвый ток', desc: '×2 ко всей добыче', price: 40000, mult: 2, type: 'all', icon: '⚡' },
-  { id: 'pool1', name: 'Mining Pool', desc: '×2 — майнинг пул', price: 600000, mult: 2, type: 'all', icon: '🌐' },
-  { id: 'green', name: 'Зелёная энергия', desc: '×2 ко всей добыче', price: 8000000, mult: 2, type: 'all', icon: '🌱' },
-  { id: 'ai2', name: 'ИИ-управление', desc: '×3 ко всей добыче', price: 1.5e8, mult: 3, type: 'all', icon: '🧬' },
-  { id: 'liquid', name: 'Жидкостное охл.', desc: '×3 ко всей добыче', price: 4e9, mult: 3, type: 'all', icon: '💦' },
-  { id: 'fusion', name: 'Ядерный синтез', desc: '×5 ко всей добыче', price: 2e11, mult: 5, type: 'all', icon: '🔆' },
-  { id: 'darke', name: 'Тёмная энергия', desc: '×8 ко всей добыче', price: 1e13, mult: 8, type: 'all', icon: '🌌' },
 ];
 
 // ── Постоянные кристальные апгрейды (не сбрасываются престижем) ──────────
@@ -55,22 +54,18 @@ const GEM_UPGRADES = [
   { id: 'offline12h', name: 'Оффлайн 12ч', desc: 'Макс. оффлайн время: 12 часов', icon: '⌚', cost: 20, requires: 'offline4h' },
   { id: 'offline48h', name: 'Оффлайн 48ч', desc: 'Макс. оффлайн время: 48 часов', icon: '📅', cost: 60, requires: 'offline12h' },
   // Сила клика
-  { id: 'click_gem', name: 'Алмазный клик', desc: 'Постоянный ×2 к силе каждого клика', icon: '💎', cost: 15, type: 'click', mult: 2 },
-  { id: 'click_gem2', name: 'Платиновый клик', desc: 'Ещё ×3 к силе клика', icon: '👑', cost: 45, requires: 'click_gem', type: 'click', mult: 3 },
-  // Добыча sat/sec
-  { id: 'all_gem', name: 'Алмазные шахты', desc: 'Постоянный ×2 ко всей добыче sat/sec', icon: '⛏️', cost: 20, type: 'all', mult: 2 },
-  { id: 'all_gem2', name: 'Золотые шахты', desc: 'Ещё ×3 ко всей добыче sat/sec', icon: '🌟', cost: 55, requires: 'all_gem', type: 'all', mult: 3 },
+  { id: 'click_gem', name: 'Алмазный клик', desc: 'Постоянный x2 к силе каждого клика', icon: '💎', cost: 15, type: 'click', mult: 2 },
+  { id: 'click_gem2', name: 'Платиновый клик', desc: 'Ещё x3 к силе клика', icon: '👑', cost: 45, requires: 'click_gem', type: 'click', mult: 3 },
   // Буст
-  { id: 'boost_gem', name: 'Суперзаряд', desc: 'Буст ×2 длится 60с вместо 30с', icon: '⚡', cost: 12 },
+  { id: 'boost_gem', name: 'Суперзаряд', desc: 'Буст x2 длится 45с вместо 30с', icon: '⚡', cost: 12 },
   // Падающие монеты
-  { id: 'coin_gem', name: 'Золотые монеты', desc: 'Падающие монеты дают ×2 sat', icon: '🤑', cost: 10 },
+  { id: 'coin_gem', name: 'Золотые монеты', desc: 'Падающие монеты дают x2 sat', icon: '🤑', cost: 10 },
 ];
 
 // NOTE: check functions are defined as strings and compiled in state.js
 //       to keep data.js fully serialisable-friendly.
 //       Here we define them directly since we don't need serialisation.
 const ACHIEVEMENTS = [
-  { id: 'sat1', name: 'Первый Сатоши', desc: 'Заработай 1 sat', icon: '🌱', check: s => s.total >= 1 },
   { id: 'sat1k', name: '1 000 Satoshi', desc: 'Накопи 1K sat', icon: '💰', check: s => s.total >= 1000 },
   { id: 'sat100k', name: '100K Satoshi', desc: 'Накопи 100K sat', icon: '💵', check: s => s.total >= 100000 },
   { id: 'sat1m', name: '1M Satoshi', desc: '0.01 BTC — уже что-то', icon: '💎', check: s => s.total >= 1000000 },
@@ -80,12 +75,10 @@ const ACHIEVEMENTS = [
   { id: 'btc100', name: '100 BTC', desc: 'Биткоин-кит', icon: '🐋', check: s => s.total >= 1e10 },
   { id: 'btc1k', name: '1 000 BTC', desc: 'Биткоин-акула', icon: '🦈', check: s => s.total >= 1e11 },
   { id: 'btc1m', name: '1 000 000 BTC', desc: 'Финансовый бог', icon: '👑', check: s => s.total >= 1e14 },
-  { id: 'clk1', name: 'Первый клик', desc: 'Начни путь майнера', icon: '👆', check: s => s.clicks >= 1 },
   { id: 'clk100', name: '100 кликов', desc: 'Палец уже греется', icon: '👊', check: s => s.clicks >= 100 },
   { id: 'clk1k', name: '1 000 кликов', desc: 'Фанатичный кликер', icon: '🤜', check: s => s.clicks >= 1000 },
   { id: 'clk10k', name: '10 000 кликов', desc: 'Легенда кликера', icon: '🦾', check: s => s.clicks >= 10000 },
   { id: 'clk100k', name: '100K кликов', desc: 'Ты одержим', icon: '🤖', check: s => s.clicks >= 100000 },
-  { id: 'dev1', name: 'Первое устройство', desc: 'Купи первый майнер', icon: '🖥️', check: s => s.devices >= 1 },
   { id: 'dev5', name: '5 устройств', desc: 'Маленькое начало', icon: '💻', check: s => s.devices >= 5 },
   { id: 'dev10', name: '10 устройств', desc: 'Маленькая ферма', icon: '🏚️', check: s => s.devices >= 10 },
   { id: 'dev25', name: '25 устройств', desc: 'Уже чувствуется тепло', icon: '🔌', check: s => s.devices >= 25 },

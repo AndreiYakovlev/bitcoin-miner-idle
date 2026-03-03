@@ -323,13 +323,14 @@ document.getElementById('gem-modal').addEventListener('click', e => {
     el.className = 'drop-boost';
     el.style.left = leftPct + '%';
     el.style.setProperty('--fall-dur', fallDur + 's');
-    el.innerHTML = `<div class="drop-boost-icon">⚡</div><div class="drop-boost-val">×2 на ${G.gemUpgrades['boost_gem'] ? 60 : 30}с</div>`;
+    const boostSec = calcBoostDuration();
+    el.innerHTML = `<div class="drop-boost-icon">⚡</div><div class="drop-boost-val">x2 на ${boostSec}с</div>`;
 
     el.addEventListener('pointerdown', (e) => {
       e.stopPropagation();
       activateBoost();
       renderBoost();
-      showNotice('⚡', 'Буст пойман!', '×2 к sat/sec на 30 секунд');
+      showNotice('⚡', 'Буст пойман!', `x2 клики на ${boostSec} секунд`);
       // burst effect
       const burst = document.createElement('div');
       burst.className = 'drop-collect-burst';
