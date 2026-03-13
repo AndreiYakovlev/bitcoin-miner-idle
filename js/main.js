@@ -193,8 +193,8 @@ document.getElementById('gem-modal').addEventListener('click', e => {
 // ── Buy mode FAB ────────────────────────
 
 (function initBuyMode() {
-  const MODES = [1, 10, 100, 0];
-  const LABELS = ['×1', '×10', '×100', 'Макс'];
+  const MODES = [1, 0];
+  const LABELS = ['×1', 'Макс'];
   const fab = document.getElementById('buy-mode-fab');
 
   fab.addEventListener('click', () => {
@@ -455,11 +455,14 @@ setInterval(() => {
       _autoClickVisTimer -= 1;
       const earned = calcAutoClick();
       const coinWrap = document.getElementById('coin-wrap');
-      if (coinWrap) {
-        const r = coinWrap.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        fireClick(cx, cy, earned);
+      const r = coinWrap ? coinWrap.getBoundingClientRect() : null;
+      if (r && r.width > 0 && r.height > 0) {
+        // монета видна — полный эффект
+        fireClick(r.left + r.width / 2, r.top + r.height / 2, earned);
+      } else {
+        // монета скрыта (другой таб) — только начислить sat, без анимации
+        G.sat   += earned;
+        G.total += earned;
       }
     }
   } else {
@@ -493,7 +496,7 @@ setInterval(save, 15000);
   G.sps = calcSps();
 
   // ── Offline earnings ────────────────────
-  if (offlineSec >= 30 && G.sps > 0) {
+  if (offlineSec >= 15 && G.sps > 0) {
     const earned = Math.floor(G.sps * offlineSec);
     G.sat += earned;
     G.total += earned;

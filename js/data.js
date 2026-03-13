@@ -114,11 +114,12 @@ const ACHIEVEMENTS = [
 ];
 
 const MANAGERS = [
-  { id: 'intern', name: 'Стажёр', emoji: '👶', basePrice: 5000, clicksPerSec: 1, desc: 'Щёлкает мышью за вас' },
-  { id: 'trader', name: 'Трейдер', emoji: '👨‍💼', basePrice: 60000, clicksPerSec: 3, desc: 'Торгует быстрее вас' },
-  { id: 'quant', name: 'Квант', emoji: '🧑‍🔬', basePrice: 700000, clicksPerSec: 15, desc: 'Алгоритмы и цифры' },
-  { id: 'aibot', name: 'ИИ-бот', emoji: '🤖', basePrice: 8000000, clicksPerSec: 80, desc: 'Автоматический трейдинг' },
-  { id: 'quantum', name: 'Квантовый компьютер', emoji: '🔮', basePrice: 1e8, clicksPerSec: 500, desc: 'Квантовые клики' },
+  // sat/cps ratio растёт ~1.5–2× на каждый тир — выгоднее покупать следующий, но не настолько, чтобы предыдущий был мусором
+  { id: 'intern', name: 'Стажёр', emoji: '👶', basePrice: 5_000, clicksPerSec: 1, desc: 'Щёлкает мышью за вас' },       //   5 000 sat/cps
+  { id: 'trader', name: 'Трейдер', emoji: '👨‍💼', basePrice: 18_000, clicksPerSec: 3, desc: 'Торгует быстрее вас' },         //   6 000 sat/cps
+  { id: 'quant', name: 'Квант', emoji: '🧑‍🔬', basePrice: 150_000, clicksPerSec: 15, desc: 'Алгоритмы и цифры' },           //  10 000 sat/cps
+  { id: 'aibot', name: 'ИИ-бот', emoji: '🤖', basePrice: 1_500_000, clicksPerSec: 80, desc: 'Автоматический трейдинг' },      //  18 750 sat/cps
+  { id: 'quantum', name: 'Квантовый компьютер', emoji: '🔮', basePrice: 20_000_000, clicksPerSec: 500, desc: 'Квантовые клики' },            //  40 000 sat/cps
 ];
 
 const NEWS_TICKER = [

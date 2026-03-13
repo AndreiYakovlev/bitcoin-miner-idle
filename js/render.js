@@ -108,11 +108,11 @@ function renderShop() {
   for (const m of MANAGERS) {
     const owned = G.managers[m.id] || 0;
     const qty = mode === 0 ? calcManagerMaxBuy(m) : mode;
-    const price = qty > 0 ? calcManagerBulkPrice(m, qty) : Math.ceil(m.basePrice);
+    const price = qty > 0 ? calcManagerBulkPrice(m, qty) : getManagerPrice(m);
     const afford = qty > 0 && G.sat >= price;
     if (afford) affordCount++;
     const qtyLabel = mode === 0 ? 'Макс×' + qty : '×' + mode;
-    const cps = (m.clicksPerSec * calcClickPow()).toFixed(1);
+    const cps = (m.clicksPerSec).toFixed(1);
     const cpsTotal = owned > 0 ? (m.clicksPerSec * calcClickPow() * owned).toFixed(1) : null;
 
     const card = document.createElement('div');
@@ -134,11 +134,14 @@ function renderShop() {
     list.appendChild(card);
   }
 
-  // update shop badge
+  // update shop badge — show count of items affordable at qty=1
   const shopBadge = document.getElementById('shop-badge');
   if (shopBadge) {
-    shopBadge.textContent = affordCount > 99 ? '99+' : affordCount;
-    shopBadge.style.display = affordCount > 0 ? 'block' : 'none';
+    let badgeCount = 0;
+    for (const m of MINERS)  if (G.sat >= getMinerPrice(m)) badgeCount++;
+    for (const m of MANAGERS) if (G.sat >= getManagerPrice(m)) badgeCount++;
+    shopBadge.textContent = badgeCount > 99 ? '99+' : badgeCount;
+    shopBadge.style.display = badgeCount > 0 ? 'block' : 'none';
   }
 }
 
@@ -146,18 +149,9 @@ function renderShop() {
 function updateShopBadge() {
   const badge = document.getElementById('shop-badge');
   if (!badge) return;
-  const mode = G.buyMode;
   let count = 0;
-  for (const m of MINERS) {
-    const qty = mode === 0 ? calcMaxBuy(m) : mode;
-    const price = qty > 0 ? calcBulkPrice(m, qty) : getMinerPrice(m);
-    if (qty > 0 && G.sat >= price) count++;
-  }
-  for (const m of MANAGERS) {
-    const qty = mode === 0 ? calcManagerMaxBuy(m) : mode;
-    const price = qty > 0 ? calcManagerBulkPrice(m, qty) : Math.ceil(m.basePrice);
-    if (qty > 0 && G.sat >= price) count++;
-  }
+  for (const m of MINERS)   if (G.sat >= getMinerPrice(m)) count++;
+  for (const m of MANAGERS) if (G.sat >= getManagerPrice(m)) count++;
   badge.textContent = count > 99 ? '99+' : count;
   badge.style.display = count > 0 ? 'block' : 'none';
 }

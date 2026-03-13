@@ -24,7 +24,7 @@ const G = {
   prestigePoints: 0,   // total accumulated points across all runs
   prestigeRuns:   0,   // number of times prestiged
   // ─ Buy mode (session only) ────────────────
-  buyMode:        1,   // 1 | 10 | 100 | 0 (= max)
+  buyMode:        1,   // 1 | 0 (= max)
   // ─ Frenzy (session only) ──────────────────
   clickFrenzy:    0,   // 0-100, bonus % to click power
   // ─ Boosts ────────────────────────────────
@@ -47,6 +47,12 @@ const G = {
 /** Next purchase price for a miner (exponential scaling). */
 function getMinerPrice(m) {
   const owned = G.miners[m.id] || 0;
+  return Math.ceil(m.basePrice * Math.pow(1.15, owned));
+}
+
+/** Next purchase price for a manager (exponential scaling). */
+function getManagerPrice(m) {
+  const owned = G.managers[m.id] || 0;
   return Math.ceil(m.basePrice * Math.pow(1.15, owned));
 }
 
